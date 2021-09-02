@@ -97,7 +97,8 @@ class Implement:
         # AÑADIENDO OPCIONES AL MENÚ ALUMNO
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
-        self.Column2.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -105,7 +106,7 @@ class Implement:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column3.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column3.add_command(label='Asesores', command=self.assesor_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -113,8 +114,8 @@ class Implement:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
-        self.Column4.add_command(label='Menú Cursos', command=self.courses_btn)
-        self.Column4.add_command(label='Menú Paralelos', command=self.paralelos_btn)
+        self.Column4.add_command(label='Cursos', command=self.courses_btn)
+        self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
         self.Column4.add_command(label='Implementos')
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -123,7 +124,7 @@ class Implement:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -131,6 +132,7 @@ class Implement:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column6)
+        self.Column6.add_command(label='Generar Reportes', command=self.report_btn)
         self.Column7 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -150,8 +152,6 @@ class Implement:
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
         self.menus.add_cascade(label='INFO', menu=self.Column8)
-        self.Column8.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
-        self.Column8.add_separator()
         self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
         self.Column8.add_separator()
         self.root.config(menu=self.menus)
@@ -179,11 +179,24 @@ class Implement:
 
         self.id_implemento = IntVar()
         self.id_implemento.set('')
-        self.id_curso = IntVar()
-        self.id_curso.set('')
         self.descripcion = StringVar()
         self.costo_impl = DoubleVar()
         self.search_field_impl = StringVar()
+
+        try:
+            obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_implements_database.get_database())
+
+            query = "SELECT isnull(max(id_implemento+1), 1) FROM implementos"
+            id_tuple = self.db_connection.select(query)
+
+            self.id_list = []
+            for i in id_tuple:
+                id_implemento = i[0]
+                self.id_list.append(id_implemento)
+
+        except BaseException as msg:
+            print(msg)
 
         self.l_id_impl = Label(self.Manage_Frame_impl, text='CÓDIGO', width='12',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
@@ -191,7 +204,7 @@ class Implement:
         self.e_id_impl = Entry(self.Manage_Frame_impl, textvariable=self.id_implemento, width='10')
         self.e_id_impl.grid(column=1, row=1, padx=0, pady=5, sticky="W")
         self.e_id_impl.focus()
-        # self.e_id_impl["state"] = "disabled"
+        self.id_implemento.set(self.id_list)
 
         self.l_descr = Label(self.Manage_Frame_impl, text='DESCRIPCIÓN', width='12',
                              font=('Copperplate Gothic Bold', 10), bg='#808080')

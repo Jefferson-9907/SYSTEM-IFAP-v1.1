@@ -69,7 +69,8 @@ class Ventana_Principal:
         # AÑADIENDO OPCIONES AL MENÚ ALUMNO
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
-        self.Column2.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -77,7 +78,7 @@ class Ventana_Principal:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column3.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column3.add_command(label='Asesores', command=self.assesor_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -95,7 +96,7 @@ class Ventana_Principal:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -103,11 +104,12 @@ class Ventana_Principal:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column6)
+        self.Column6.add_command(label='Generar Reportes', command=self.report_btn)
         self.Column7 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
+        # CREACIÓN DEL DE MENÚ USUARIOS
         # =============================================================
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
@@ -119,19 +121,11 @@ class Ventana_Principal:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
-        # =============================================================
-        self.menus.add_cascade(label='AYUDA', menu=self.Column8)
-        self.Column8.add_command(label='Tutorial')
-        self.Column9 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
-        self.menus.add_cascade(label='INFO', menu=self.Column9)
-        self.Column9.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
-        self.Column9.add_separator()
+        self.menus.add_cascade(label='INFO', menu=self.Column8)
+        self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
+        self.Column8.add_separator()
         self.root.config(menu=self.menus)
 
         data = datetime.now()

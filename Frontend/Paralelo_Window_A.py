@@ -40,6 +40,7 @@ class Paralelo:
             'limpiar': PhotoImage(file='./recursos/icon_clean.png'),
             'buscar': PhotoImage(file='./recursos/icon_buscar.png'),
             'todo': PhotoImage(file='./recursos/icon_ver_todo.png'),
+            'actualizar': PhotoImage(file='./recursos/icon_upd.png')
 
         }
 
@@ -95,7 +96,7 @@ class Paralelo:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column3.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column3.add_command(label='Asesores', command=self.assesor_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -103,8 +104,8 @@ class Paralelo:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
-        self.Column4.add_command(label='Menú Cursos', command=self.courses_btn)
-        self.Column4.add_command(label='Menú Paralelos')
+        self.Column4.add_command(label='Cursos', command=self.courses_btn)
+        self.Column4.add_command(label='Paralelos')
         self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -121,7 +122,7 @@ class Paralelo:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column6)
-        self.Column6.add_command(label='Menú Reportes', command=self.report_btn)
+        self.Column6.add_command(label='Generar Reportes', command=self.report_btn)
         self.Column7 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -177,11 +178,27 @@ class Paralelo:
 
         self.search_field_par = StringVar()
 
+        try:
+            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_paralelo_database.get_database())
+
+            query = "SELECT isnull(max(id_paralelo+1), 1) FROM paralelos"
+            id_tuple = self.db_connection.select(query)
+
+            self.id_list = []
+            for i in id_tuple:
+                id_paralelo = i[0]
+                self.id_list.append(id_paralelo)
+
+        except BaseException as msg:
+            print(msg)
+
         self.l_id_paralelo = Label(self.Manage_Frame_par, text='ID PARALELO', width='20',
                                    font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_id_paralelo.grid(column=0, row=1, padx=1, pady=5)
         self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11')
         self.e_id_paralelo.grid(column=1, row=1, padx=1, pady=5, sticky="W")
+        self.e_id_paralelo_1.set(self.id_list)
         self.e_id_paralelo.focus()
 
         try:
@@ -362,6 +379,13 @@ class Paralelo:
         self.show_all_btn.image = imagenes['todo']
         self.show_all_btn.grid(row=0, column=3, padx=10, pady=10)
 
+        self.click_home()
+
+        self.act_btn = Button(self.Detail_Frame_par, image=imagenes['actualizar'], text='ACTUALIZAR', width=100,
+                              command=self.paralelos_btn, compound="right")
+        self.act_btn.image = imagenes['actualizar']
+        self.act_btn.grid(row=0, column=4, padx=10, pady=10)
+
         # Table Frame
         Table_Frame_par = Frame(self.Detail_Frame_par, bg='#a27114')
         Table_Frame_par.place(x=5, y=60, width=805, height=525)
@@ -399,6 +423,24 @@ class Paralelo:
         self.Table_par.bind('<ButtonRelease 1>', self.get_fields_par)
 
         self.show_data_par()
+
+    def click_home(self):
+        try:
+            obj_course_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_course_database.get_database())
+
+            query = "SELECT COUNT(*) FROM paralelos;"
+            data = self.db_connection.select(query)
+            global no_paralelos
+            for value in data:
+                no_paralelos = value[0]
+
+            total_courses = Label(self.Detail_Frame_par, text=f" TOTAL PARALELOS: {no_paralelos}",
+                                  font=("Copperplate Gothic Bold", 12, "bold"), bg='#a27114', fg="White")
+            total_courses.grid(row=0, column=5, padx=20, pady=10)
+
+        except BaseException as msg:
+            print(msg)
 
     def add_hora(self):
         if self.e_n_hora_e == "" or self.e_n_hora_s == "":

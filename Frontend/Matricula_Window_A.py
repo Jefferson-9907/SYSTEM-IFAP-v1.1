@@ -29,6 +29,7 @@ class Matricula:
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
         self.root.iconbitmap('./recursos/ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.configure(bg='#a27114')
 
         self.imagenes = {
             'matricula': PhotoImage(file='./recursos/icon_n_al.png'),

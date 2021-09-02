@@ -441,9 +441,9 @@ class Matricula:
             self.show_data_m()
             self.clear_field_m()
 
-        except BaseException as msg:
-            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
-                                                                  f"REVISE LA CONEXIÓN: {msg}")
+        except BaseException:
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ERROR)", f"EL ESTUDIANTE YA SE ENVUENTRA MATRICULADO "
+                                                                    f"EN UN CURSO!!!")
 
     def clear_field_m(self):
         self.e_n_mat_al_m.set('')
@@ -503,10 +503,10 @@ class Matricula:
             self.db_connection.insert(query, values)
 
             self.show_data_m()
-            self.clear_field_m()
             messagebox.showinfo("SYST_CONTROL(IFAP®)", f"LA MATRÍCULA DEL ESTUDIANTE: {self.e_nombres_al.get()}\n"
                                                        f"CON No. DE CÉDULA: {self.e_n_mat_al_m.get()}\n"
                                                        f"HA SIDO ACTUALIZADA DEL REGISTRO CORRECTAMENTE!!!")
+            self.clear_field_m()
 
         except BaseException as msg:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
@@ -523,12 +523,13 @@ class Matricula:
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
                                       f"DESEA ELIMINAR LA MATRÍCULA: {tree_view_values}")
             if ask is True:
-                query = "delete from matriculas where id_estudiante=?;"
+                query = "delete from matriculas where id_matricula=?;"
                 self.db_connection.delete(query, tree_view_values)
+
+                self.show_data_m()
                 messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DE LA MATRÍCULA: {tree_view_values} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.clear_field_m()
-                self.show_data_m()
             else:
                 pass
 

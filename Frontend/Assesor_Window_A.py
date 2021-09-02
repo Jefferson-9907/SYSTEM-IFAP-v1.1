@@ -87,6 +87,7 @@ class Assesor:
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
         self.Column2.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -117,6 +118,7 @@ class Assesor:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column6)
+        self.Column6.add_command(label='Menú Reportes', command=self.report_btn)
         self.Column7 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -452,6 +454,7 @@ class Assesor:
                       self.e_n_ced_as.get()
                       )
             self.db_connection.insert(query, values)
+
             self.show_data_as()
             messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ESTUDIANTE: {self.e_nombres_as.get()} "
                                                        f"{self.e_apellidos_as.get()}\n"

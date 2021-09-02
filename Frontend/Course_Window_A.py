@@ -94,7 +94,7 @@ class Course:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column3.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column3.add_command(label='Asesores', command=self.assesor_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -102,8 +102,8 @@ class Course:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
-        self.Column4.add_command(label='Menú Cursos')
-        self.Column4.add_command(label='Menú Paralelos', command=self.paralelos_btn)
+        self.Column4.add_command(label='Cursos')
+        self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
         self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -112,7 +112,7 @@ class Course:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -120,6 +120,7 @@ class Course:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column6)
+
         self.Column7 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -412,12 +413,12 @@ class Course:
             self.db_connection.insert(query, values)
 
             self.clear_field_cur()
-            self.show_data_cur()
             messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL CURSO ACTUALIZADOS CORRECTAMENTE\n"
                                                        f"ID CURSO: {values[0]},\n"
                                                        f"NOMBRE DE CURSO: {values[1]}\n"
                                                        f"COSTO MATRÍCULA: {values[2]}\n"
                                                        f"COSO MENSUAL: {values[3]}")
+            self.show_data_cur()
 
         except BaseException as msg:
             messagebox.showerror("SYST_CONTROL(IFAP®) (ERROR)", f"NO SE HAN PODIDO ACTUALIZAR "
@@ -439,9 +440,9 @@ class Course:
                 self.db_connection.delete(query, tree_view_values)
 
                 self.clear_field_cur()
-                self.show_data_cur()
                 messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL CURSO: {tree_view_values} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
+                self.show_data_cur()
 
             else:
                 pass

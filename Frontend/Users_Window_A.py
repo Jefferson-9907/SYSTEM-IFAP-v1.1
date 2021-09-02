@@ -4,8 +4,6 @@ from _datetime import datetime
 from tkinter import *
 from tkinter import messagebox, ttk
 
-import mariadb
-
 import Backend.connection
 import Model_class.users_registration
 
@@ -45,8 +43,7 @@ class Users:
         # =============================================================
         # BANNER PANTALLA ESTUDIANTES
         # =============================================================
-
-        self.txt = "SYSTEM CONTROL IFAP (ESTUDIANTES)"
+        self.txt = "SYSTEM CONTROL IFAP (USUARIOS)"
         self.count = 0
         self.text = ''
         self.color = ["#4f4e4d", "#f29844", "red2"]
@@ -133,21 +130,13 @@ class Users:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
-        # =============================================================
-        self.menus.add_cascade(label='AYUDA', menu=self.Column8)
-        self.Column8.add_command(label='Tutorial')
-        self.Column9 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
-        self.menus.add_cascade(label='INFO', menu=self.Column9)
-        self.Column9.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
-        self.Column9.add_separator()
-        self.Column9.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
-        self.Column9.add_separator()
+        self.menus.add_cascade(label='INFO', menu=self.Column8)
+        self.Column8.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
+        self.Column8.add_separator()
+        self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
+        self.Column8.add_separator()
         self.root.config(menu=self.menus)
 
         data = datetime.now()
@@ -163,6 +152,10 @@ class Users:
                               fg='white')
         self.footer_4.place(x=0, y=725)
 
+        # Manage Frame
+        Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
+        Manage_Frame.place(x=15, y=75, width=385, height=600)
+
         # Variables
         self.id_us_1 = IntVar()
         self.e_us_1 = StringVar()
@@ -173,12 +166,8 @@ class Users:
 
         self.search_field_us = StringVar()
 
-        # Manage Frame
-        Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#0d1e24')
-        Manage_Frame.place(x=15, y=75, width=385, height=600)
-
         m_title = Label(Manage_Frame, text="-ADMINISTAR USUARIOS-", font=("Copperplate Gothic Bold", 16, "bold"),
-                        bg='#0d1e24', fg="White")
+                        bg='#a27114', fg="White")
         m_title.grid(row=0, columnspan=2, padx=25, pady=50)
 
         self.l_id_us = Label(Manage_Frame, text='ID USUARIO', width='15', font=('Copperplate Gothic Bold', 10),
@@ -213,11 +202,13 @@ class Users:
         self.l_tipo = Label(Manage_Frame, text='TIPO USUARIO', width='15', font=('Copperplate Gothic Bold', 10),
                             bg='#808080')
         self.l_tipo.grid(column=0, row=6, padx=1, pady=5)
-        self.e_tipo = Entry(Manage_Frame, textvariable=self.e_tipo_1, width='33')
+        self.e_tipo = ttk.Combobox(Manage_Frame, textvariable=self.e_tipo_1, width='15',
+                                   font=("Arial", 9, "bold"), state="readonly")
+        self.e_tipo["values"] = ["Administrador", "Secretaría", "Caja"]
         self.e_tipo.grid(column=1, row=6, padx=1, pady=5, sticky="W")
 
         # Button Frame
-        self.btn_frame = Frame(Manage_Frame, bg='#0d1e24')
+        self.btn_frame = Frame(Manage_Frame, bg='#a27114')
         self.btn_frame.place(x=10, y=500, width=360)
 
         self.add_btn = Button(self.btn_frame, image=imagenes['nuevo'], text='REGISTAR', command=self.add_us,
@@ -244,10 +235,10 @@ class Users:
 
         # Detail Frame
         # Detail Frame
-        self.Detail_Frame = Frame(self.root, bd=4, relief=RIDGE, bg='#0d1e24')
+        self.Detail_Frame = Frame(self.root, bd=4, relief=RIDGE, bg='#a27114')
         self.Detail_Frame.place(x=405, y=75, width=940, height=605)
 
-        self.lbl_search = Label(self.Detail_Frame, text="BUSCAR", bg='#0d1e24', fg="White",
+        self.lbl_search = Label(self.Detail_Frame, text="BUSCAR", bg='#a27114', fg="White",
                                 font=("Copperplate Gothic Bold", 12, "bold"))
         self.lbl_search.grid(row=0, column=0, pady=10, padx=2, sticky="w")
 
@@ -371,20 +362,17 @@ class Users:
             obj_usuarios_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_usuarios_database.get_database())
 
-            obj_usuarios_database = Model_class.users_registration.UsersRegistration(self.e_us.get(),
-                                                                                     self.e_email.get(),
-                                                                                     self.e_contr.get(),
-                                                                                     self.e_tipo.get())
-            query = 'insert into usuarios (usuario,email,contrasena,tipo) values (%s,%s,%s,%s);'
-            values = (obj_usuarios_database.get_usuario(), obj_usuarios_database.get_email(),
-                      obj_usuarios_database.get_contrasena(), obj_usuarios_database.get_t_usuario())
+            query = 'insert into usuarios (usuario, email, contrasena, tipo) values (?, ?, ?, ?);'
+            values = (self.e_us.get(), self.e_email.get(), self.e_contr.get(), self.e_tipo.get())
             self.db_connection.insert(query, values)
+
+            self.show_data_us()
+            self.clear_field_us()
             messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS GUARDADOS CORRECTAMENTE\n "
                                                        f"USUARIO={values[0]},\n "
                                                        f"EMAIL={values[1]}\n"
                                                        f"CONTRASEÑA={values[2]}\n,"
                                                        f"TIPO USUARIO={values[3]}")
-            self.show_data_us()
 
         except BaseException as msg:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
@@ -419,28 +407,31 @@ class Users:
         self.del_btn["state"] = "normal"
 
     def update_us(self):
-        self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="ddbb_sys_ifap")
-        self.curr = self.connect.cursor()
+        try:
+            obj_students_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_students_database.get_database())
 
-        query = f"""UPDATE usuarios SET id_usuario="{self.e_id_us.get()}", 
-        usuario="{self.e_us.get()}",
-        email="{self.e_email.get()}", 
-        contrasena="{self.e_contr.get()}",
-        tipo="{self.e_tipo.get()}" WHERE id_usuario={self.e_id_us.get()}"""
+            query = f"""UPDATE usuarios SET usuario=?, email=?, contrasena=?, tipo=? WHERE id_usuario=?"""
 
-        self.curr.execute(query)
-        self.connect.commit()
-        self.show_data_us()
-        messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL USUARIO"
-                                                   f"USUARIO: {self.e_us.get()} "
-                                                   f"CONTRASEÑA: {self.e_contr.get()}\n"
-                                                   f"HAN SIDO ACTUALIZADOS DEL REGISTRO")
-        self.clear_field_us()
+            values = (self.e_us.get(), self.e_email.get(), self.e_contr.get(), self.e_tipo.get(), self.e_id_us.get())
+            self.db_connection.insert(query, values)
+
+            self.show_data_us()
+            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL USUARIO\n"
+                                                       f"USUARIO: {self.e_us.get()}\n"
+                                                       f"EMAIL: {self.e_email.get()}\n"
+                                                       f"CONTRASEÑA: {self.e_contr.get()}\n"
+                                                       f"HAN SIDO ACTUALIZADOS DEL REGISTRO")
+            self.clear_field_us()
+
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                                                  f"REVISE LA CONEXIÓN: {msg}")
 
     def delete_us(self):
         try:
-            obj_user_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_user_database.get_database())
+            obj_users_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_users_database.get_database())
 
             tree_view_content = self.Table.focus()
             tree_view_items = self.Table.item(tree_view_content)
@@ -448,12 +439,14 @@ class Users:
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
                                       f"DESEA ALIMINAR AL USUARIO: {tree_view_values}")
             if ask is True:
-                query = "delete from usuarios where usuario=%s;"
-                self.db_connection.delete(query, (tree_view_values,))
+                query = "delete from usuarios where usuario=?;"
+                self.db_connection.delete(query, tree_view_values)
+
+                self.show_data_us()
                 messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL USUARIO: {tree_view_values} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.clear_field_us()
-                self.show_data_us()
+
             else:
                 pass
 
@@ -462,17 +455,102 @@ class Users:
                                  f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
                                  f"REVISE LA CONEXIÓN: {msg}")
 
+    # =======================================================================
+    # ========================Searching Started==============================
+    # =======================================================================
+    @classmethod
+    def binary_search(cls, _list, target):
+        """this is class method searching for user input into the table"""
+        start = 0
+        end = len(_list) - 1
+
+        while start <= end:
+            middle = (start + end) // 2
+            midpoint = _list[middle]
+            if midpoint > target:
+                end = middle - 1
+            elif midpoint < target:
+                start = middle + 1
+            else:
+                return midpoint
+
+    @classmethod
+    def bubble_sort(self, _list):
+        """this class methods sort the string value of user input such as name, email"""
+        for j in range(len(_list) - 1):
+            for i in range(len(_list) - 1):
+                if _list[i].upper() > _list[i + 1].upper():
+                    _list[i], _list[i + 1] = _list[i + 1], _list[i]
+        return _list
+
     def search_data_us(self):
-        obj_user_database = Model_class.users_registration.GetDatabase('use ifap;')
-        self.db_connection.create(obj_user_database.get_database())
-        query = "select * from usuarios where usuario LIKE '%" + str(self.search_field_us.get()) + "%'"
-        data = self.db_connection.select(query)
+        a = self.search_field_us.get()
+        if self.search_field_us.get() != '':
+            if a.isnumeric():
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "NO SE ADMITEN NÚMEROS EN EL CAMPO DE BÚSQUEDA "
+                                                                    "DE ASESOR")
+                self.search_field_us.set("")
+            elif a.isspace():
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "NO SE ADMITEN ESPACIOS EN EL CAMPO DE BÚSQUEDA "
+                                                                    "DE ASESOR")
+                self.search_field_us.set("")
+            else:
+                if a.isalpha():
+                    try:
+                        search_list = []
+                        for child in self.Table.get_children():
+                            val = self.Table.item(child)["values"][1]
+                            search_list.append(val)
 
-        self.Table.delete(*self.Table.get_children())
+                        sorted_list = self.bubble_sort(search_list)
+                        self.output = self.binary_search(sorted_list, self.search_field_us.get())
 
-        for values in data:
-            data_list = [values[0], values[1], values[2], values[3], values[4]]
-            self.Table.insert('', END, values=data_list)
+                        if self.output:
+                            messagebox.showinfo("SYST_CONTROL(IFAP®)-->ENCONTRADO",
+                                                f"EL ASESOR: '{self.output}' HA SIDO ENCONTRADO")
+
+                            obj_users_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
+                            self.db_connection.create(obj_users_database.get_database())
+
+                            query = "select * from usuarios where usuario LIKE '" + str(self.output) + "%'"
+                            data = self.db_connection.select(query)
+                            self.Table.delete(*self.Table.get_children())
+
+                            for values in data:
+                                data_list = [values[0], values[1], values[2], values[3], values[4], values[5]]
+
+                                self.Table.insert('', END, values=data_list)
+                                self.search_field_us.set("")
+
+                        else:
+                            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR",
+                                                 "ASESOR NO ENCONTRADO,\nSE MOSTRARÁN RESULTADOS RELACIONADOS.")
+
+                            obj_users_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
+                            self.db_connection.create(obj_users_database.get_database())
+
+                            query = "select * from usuarios where usuario LIKE '%" + \
+                                    str(self.search_field_us.get()) + "%'"
+
+                            data = self.db_connection.select(query)
+                            self.Table.delete(*self.Table.get_children())
+
+                            for values in data:
+                                data_list = [values[0], values[1], values[2], values[3], values[4], values[5]]
+
+                                # self.student_tree.delete(*self.student_tree.get_children())
+                                self.Table.insert('', END, values=data_list)
+                                self.search_field_us.set("")
+
+                    except BaseException as msg:
+                        messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                             f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                             f"REVISE LA CONEXIÓN: {msg}")
+                else:
+                    self.show_data_us()
+        else:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "EL CAMPO DE BÚSQUEDA SE ENCUENTRA VACÍO\n"
+                                                                "INGRESE EL NOMBRE DEL ASESOR.")
 
     def show_data_us(self):
         try:
@@ -481,11 +559,10 @@ class Users:
 
             query = "select * from usuarios;"
             data = self.db_connection.select(query)
-            # print(data)
             self.Table.delete(*self.Table.get_children())
+
             for values in data:
                 data_list = [values[0], values[1], values[2], values[3], values[4]]
-                # print(data_list)
                 self.Table.insert('', END, values=data_list)
 
         except BaseException as msg:

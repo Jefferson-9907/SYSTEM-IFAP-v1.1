@@ -2,11 +2,11 @@
 import random
 from _datetime import datetime
 from tkinter import *
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from tkinter.ttk import Treeview
 
-import mariadb
 import Backend.connection
+import Model_class.implement_registration
 
 import Frontend.login_form
 import Frontend.Principal_Window_A
@@ -40,6 +40,9 @@ class Implement:
             'todo': PhotoImage(file='./recursos/icon_ver_todo.png'),
 
         }
+
+        # ======================Backend connection=============
+        self.db_connection = Backend.connection.DatabaseConnection()
 
         # =============================================================
         # BANNER PANTALLA ESTUDIANTES
@@ -81,8 +84,6 @@ class Implement:
         self.root.config(menu=self.menubarra)
         self.menus = Menu(self.root)
         self.Column1 = Menu(self.menus, tearoff=0)
-        self.cuaderno = ttk.Notebook(self.root, width=1340, height=625)
-        self.cuaderno.grid(row=1, column=0, sticky='nw', padx=10, pady=5)
 
         # =============================================================
         # AÑADIENDO OPCIONES AL MENÚ PRINCIPAL
@@ -169,11 +170,11 @@ class Implement:
         self.footer_4.place(x=0, y=725)
 
         # Manage Frame Cursos
-        self.Manage_Frame_impl = Frame(self.root, relief=RIDGE, bd=4, bg='#0d1e24')
+        self.Manage_Frame_impl = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
         self.Manage_Frame_impl.place(x=20, y=75, width=450, height=605)
 
         m_title_c = Label(self.Manage_Frame_impl, text="-ADMINISTAR IMPLEMENTOS-",
-                          font=("Copperplate Gothic Bold", 16, "bold"), bg='#0d1e24', fg="White")
+                          font=("Copperplate Gothic Bold", 16, "bold"), bg='#a27114', fg="White")
         m_title_c.grid(row=0, columnspan=2, padx=40, pady=20)
 
         self.id_implemento = IntVar()
@@ -182,7 +183,6 @@ class Implement:
         self.id_curso.set('')
         self.descripcion = StringVar()
         self.costo_impl = DoubleVar()
-        self.costo_impl.set('')
         self.search_field_impl = StringVar()
 
         self.l_id_impl = Label(self.Manage_Frame_impl, text='CÓDIGO', width='12',
@@ -193,28 +193,20 @@ class Implement:
         self.e_id_impl.focus()
         # self.e_id_impl["state"] = "disabled"
 
-        self.l_id_cur = Label(self.Manage_Frame_impl, text='ID CURSO', width='12',
-                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_id_cur.grid(column=0, row=2, padx=0, pady=5)
-        id_curso_box = ttk.Combobox(self.Manage_Frame_impl, textvariable=self.id_curso, width='6',
-                                    font=("Arial", 9, "bold"), state="readonly")
-        id_curso_box['values'] = ("3001", "3002", "3003", "3004")
-        id_curso_box.grid(column=1, row=2, padx=0, pady=10, sticky="W")
-
         self.l_descr = Label(self.Manage_Frame_impl, text='DESCRIPCIÓN', width='12',
                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_descr.grid(column=0, row=3, padx=0, pady=5)
+        self.l_descr.grid(column=0, row=2, padx=0, pady=5)
         self.e_descr = Entry(self.Manage_Frame_impl, textvariable=self.descripcion, width='50')
-        self.e_descr.grid(column=1, row=3, padx=0, pady=5, sticky="W")
+        self.e_descr.grid(column=1, row=2, padx=0, pady=5, sticky="W")
 
         self.l_cost_imple = Label(self.Manage_Frame_impl, text='COSTO', width='12',
                                   font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_cost_imple.grid(column=0, row=4, padx=0, pady=5)
+        self.l_cost_imple.grid(column=0, row=3, padx=0, pady=5)
         self.e_cost_imple = Entry(self.Manage_Frame_impl, textvariable=self.costo_impl, width='8')
-        self.e_cost_imple.grid(column=1, row=4, padx=0, pady=5, sticky="W")
+        self.e_cost_imple.grid(column=1, row=3, padx=0, pady=5, sticky="W")
 
         # Button Frame
-        self.btn_frame = Frame(self.Manage_Frame_impl, bg='#0d1e24')
+        self.btn_frame = Frame(self.Manage_Frame_impl, bg='#a27114')
         self.btn_frame.place(x=5, y=250, width=430)
 
         self.add_btn = Button(self.btn_frame, image=imagenes['nuevo'], text='REGISTAR', width=80,
@@ -240,10 +232,10 @@ class Implement:
         self.clear_btn.grid(row=0, column=4, padx=10, pady=10)
 
         # Detail Frame
-        self.Detail_Frame = Frame(self.root, bd=4, relief=RIDGE, bg='#0d1e24')
+        self.Detail_Frame = Frame(self.root, bd=4, relief=RIDGE, bg='#a27114')
         self.Detail_Frame.place(x=475, y=75, width=865, height=605)
 
-        self.lbl_search = Label(self.Detail_Frame, text="BUSCAR", bg='#0d1e24', fg="White",
+        self.lbl_search = Label(self.Detail_Frame, text="BUSCAR", bg='#a27114', fg="White",
                                 font=("Copperplate Gothic Bold", 12, "bold"))
         self.lbl_search.grid(row=0, column=0, pady=10, padx=2, sticky="w")
 
@@ -267,19 +259,17 @@ class Implement:
         Table_Frame.place(x=5, y=60, width=845, height=525)
 
         Y_scroll = Scrollbar(Table_Frame, orient=VERTICAL)
-        self.Table = Treeview(Table_Frame, columns=("id_impl", "id_cur", "descr_impl", "cost_impl"),
+        self.Table = Treeview(Table_Frame, columns=("id_impl", "descr_impl", "cost_impl"),
                               yscrollcommand=Y_scroll.set)
 
         Y_scroll.pack(side=RIGHT, fill=Y)
         Y_scroll.config(command=self.Table.yview)
         self.Table.heading("id_impl", text="ID IMPLEMENTO")
-        self.Table.heading("id_cur", text="ID CURSO")
         self.Table.heading("descr_impl", text="DESCRIPCIÓN")
         self.Table.heading("cost_impl", text="PRECIO")
 
         self.Table['show'] = "headings"
         self.Table.column("id_impl", width=10)
-        self.Table.column("id_cur", width=10)
         self.Table.column("descr_impl", width=400)
         self.Table.column("cost_impl", width=10)
 
@@ -317,27 +307,57 @@ class Implement:
         self.heading.after(50, self.heading_color)
 
     def add_impl(self):
-        if self.descripcion.get() == '':
-            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "POR FAVOR INGRESE EL CAMPO: DESCRIPCIÓN ")
-            self.e_descr.focus()
+        try:
+            obj_user_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_user_database.get_database())
+
+            query = "select * from implementos;"
+            data = self.db_connection.select(query)
+            self.implement_list = []
+
+            for values in data:
+                implement_data_list = values[1]
+                self.implement_list.append(implement_data_list)
+
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                                                  f"REVISE LA CONEXIÓN: {msg}")
+
+        if self.descripcion.get() == "" or self.costo_impl.get() == "":
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->ERROR", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
+
+        elif self.descripcion.get() in self.implement_list:
+            messagebox.showerror("YA EXISTE!!!", f"{self.e_descr.get()} EL IMPLEMENTO YA EXISTE, INTENTE OTRO NOMBRE")
 
         else:
-            cone = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-            cursor = cone.cursor()
-            sql = "INSERT INTO implementos(id_curso, descripcion, costo_implemento) VALUES (?, ?, ?)"
-            cursor.execute(sql, (self.id_curso.get(), self.descripcion.get(), self.costo_impl.get()))
-            cone.commit()
+            self.click_submit()
 
-            self.clear_field_impl()
+    def click_submit(self):
+        """
+            Inicializar al hacer clic en el botón enviar, que tomará los datos del cuadro de entrada
+            e inserte esos datos en la tabla de implementos después de la validación exitosa de esos datos
+        """
+        try:
+            obj_usuarios_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_usuarios_database.get_database())
+
+            query = 'insert into implementos (descripcion, costo_implemento) values (?, ?);'
+            values = (self.e_descr.get(), self.e_cost_imple.get())
+            self.db_connection.insert(query, values)
+
             self.show_data_impl()
-            # self.clear_field()
-            cone.close()
+            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS GUARDADOS CORRECTAMENTE\n "
+                                                       f"IMPLEMENTO={values[1]},\n "
+                                                       f"COSTO={values[2]}")
+            self.clear_field_impl()
 
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", "DATOS DEL IMPLEMENTO GUARDADOS EN EL REGISTRO CORRECTAMENTE!!!")
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                 f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                 f"REVISE LA CONEXIÓN: {msg}")
 
     def clear_field_impl(self):
         self.id_implemento.set('')
-        self.id_curso.set('')
         self.descripcion.set('')
         self.costo_impl.set('')
         self.e_id_impl.focus()
@@ -349,99 +369,173 @@ class Implement:
         self.content = self.Table.item(self.cursor_row)
         row = self.content['values']
         self.id_implemento.set(row[0])
-        self.id_curso.set(row[1])
-        self.descripcion.set(row[2])
-        self.costo_impl.set(row[3])
+        self.descripcion.set(row[1])
+        self.costo_impl.set(row[2])
         self.update_btn["state"] = "normal"
         self.delete_btn["state"] = "normal"
 
     def update_impl(self):
-        if self.id_curso.get() == "":
-            messagebox.showerror("ERROR!!!", "NO HAY CAMPOS CON DATOS QUE MODIFICAR,\n"
-                                             "SELECCIONE UN REGISTRO!!!")
+        try:
+            obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_implements_database.get_database())
 
-        else:
-            self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-            self.curr = self.connect.cursor()
+            query = f"""UPDATE implementos SET descripcion=?, costo_implemento=? WHERE id_implemento=?"""
 
-            sql = f"""UPDATE implementos SET id_curso="{self.id_curso.get()}", descripcion="{self.descripcion.get()}"\
-            WHERE id_implemento={self.id_implemento.get()}"""
-            self.curr.execute(sql)
-            self.connect.commit()
+            values = (self.descripcion.get(), self.costo_impl.get(), self.id_implemento.get())
+            self.db_connection.insert(query, values)
 
             self.show_data_impl()
-            # self.connect.close()
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", "DATOS DEL IMPLEMENTO: " + self.descripcion.get() +
-                                " HAN SIDO ACTUALIZADO EN EL REGISTRO CORRECTAMENTE!!!")
+            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL IMPLEMENTO\n"
+                                                       f"IMPLEMENTO: {self.descripcion.get()}\n"
+                                                       f"COSTO: {self.costo_impl.get()}\n"
+                                                       f"HAN SIDO ACTUALIZADOS DEL REGISTRO")
             self.clear_field_impl()
+
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                                                  f"REVISE LA CONEXIÓN: {msg}")
 
     def delete_impl(self):
-        if self.id_implemento.get() == "":
-            messagebox.showerror("ERROR!!!", "NO HAY CAMPOS CON DATOS QUE ELIMINAR,\n"
-                                             "SELECCIONE UN REGISTRO!!!")
+        try:
+            obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_implements_database.get_database())
 
-        else:
-            self.conn = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-            self.curr = self.conn.cursor()
+            tree_view_content = self.Table.focus()
+            tree_view_items = self.Table.item(tree_view_content)
+            tree_view_values = tree_view_items['values'][1]
+            ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
+                                      f"DESEA ALIMINAR AL IMPLEMENTO: {tree_view_values}")
+            if ask is True:
+                query = "delete from implementos where descripcion=?;"
+                self.db_connection.delete(query, tree_view_values)
 
-            self.sql = f"""DELETE FROM implementos WHERE id_implemento={self.id_implemento.get()}"""
-            self.curr.execute(self.sql)
+                self.show_data_impl()
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL IMPLEMENTO: {tree_view_values} "
+                                                           f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
+                self.clear_field_impl()
 
-            self.conn.commit()
+            else:
+                pass
 
-            self.show_data_impl()
-            self.clear_field_impl()
-            self.conn.close()
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                 f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                 f"REVISE LA CONEXIÓN: {msg}")
 
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", "DATOS DEL IMPLEMENTO ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
+    # =======================================================================
+    # ========================Searching Started==============================
+    # =======================================================================
+    @classmethod
+    def binary_search(cls, _list, target):
+        """this is class method searching for user input into the table"""
+        start = 0
+        end = len(_list) - 1
+
+        while start <= end:
+            middle = (start + end) // 2
+            midpoint = _list[middle]
+            if midpoint > target:
+                end = middle - 1
+            elif midpoint < target:
+                start = middle + 1
+            else:
+                return midpoint
+
+    @classmethod
+    def bubble_sort(self, _list):
+        """this class methods sort the string value of user input such as name, email"""
+        for j in range(len(_list) - 1):
+            for i in range(len(_list) - 1):
+                if _list[i].upper() > _list[i + 1].upper():
+                    _list[i], _list[i + 1] = _list[i + 1], _list[i]
+        return _list
 
     def search_data_impl(self):
-        if self.search_field_impl.get() == "":
-            messagebox.showerror("ERROR!!!", "POR FAVOR INGRESE EL CAMPO: ID DE IMPLEMENTO")
-        self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-        self.curr = self.connect.cursor()
-        self.search_id_impl = self.search_field_impl.get()
-        sql = f"""SELECT id_implemento FROM implementos WHERE id_implemento = {self.search_id_impl}"""
-        self.curr.execute(sql)
-        self.curr.fetchall()
-        if self.curr.rowcount == 1:
-            self.sql = f"""SELECT * FROM implementos WHERE id_implemento={self.search_id_impl}"""
-            self.curr.execute(self.sql)
-            self.rows = self.curr.fetchall()
+        a = self.search_field_impl.get()
+        if self.search_field_impl.get() != '':
+            if a.isnumeric():
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "NO SE ADMITEN NÚMEROS EN EL CAMPO DE BÚSQUEDA "
+                                                                    "DEL IMPLEMENTO")
+                self.search_field_impl.set("")
+            elif a.isspace():
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "NO SE ADMITEN ESPACIOS EN EL CAMPO DE BÚSQUEDA "
+                                                                    "DEL IMPLEMENTO")
+                self.search_field_impl.set("")
+            else:
+                if a.isalpha():
+                    try:
+                        search_list = []
+                        for child in self.Table.get_children():
+                            val = self.Table.item(child)["values"][1]
+                            search_list.append(val)
 
-            if len(self.rows) != 0:
-                self.Table.delete(*self.Table.get_children())
-                for self.row in self.rows:
-                    self.Table.insert('', END, values=self.row)
-                self.connect.commit()
+                        sorted_list = self.bubble_sort(search_list)
+                        self.output = self.binary_search(sorted_list, self.search_field_impl.get())
+
+                        if self.output:
+                            messagebox.showinfo("SYST_CONTROL(IFAP®)-->ENCONTRADO",
+                                                f"EL ASESOR: '{self.output}' HA SIDO ENCONTRADO")
+
+                            obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+                            self.db_connection.create(obj_implements_database.get_database())
+
+                            query = "select * from implementos where descripcion LIKE '" + str(self.output) + "%'"
+                            data = self.db_connection.select(query)
+                            self.Table.delete(*self.Table.get_children())
+
+                            for values in data:
+                                data_list = [values[0], values[1], values[2]]
+
+                                self.Table.insert('', END, values=data_list)
+                                self.search_field_impl.set("")
+
+                        else:
+                            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR",
+                                                 "ASESOR NO ENCONTRADO,\nSE MOSTRARÁN RESULTADOS RELACIONADOS.")
+
+                            obj_implements_database = Model_class.implement_registration.GetDatabase('use '
+                                                                                                     'ddbb_sys_ifap;')
+                            self.db_connection.create(obj_implements_database.get_database())
+
+                            query = "select * from implementos where descripcion LIKE '%" + \
+                                    str(self.search_field_impl.get()) + "%'"
+
+                            data = self.db_connection.select(query)
+                            self.Table.delete(*self.Table.get_children())
+
+                            for values in data:
+                                data_list = [values[0], values[1], values[2]]
+
+                                self.Table.insert('', END, values=data_list)
+                                self.search_field_impl.set("")
+
+                    except BaseException as msg:
+                        messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                             f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                             f"REVISE LA CONEXIÓN: {msg}")
+                else:
+                    self.show_data_impl()
         else:
-            messagebox.showerror("ERROR!!!", "NO EXISTE EL REGISTRO DEL IMPLEMENTO CON EL ID: " +
-                                 self.search_id_impl)
-            self.search_field_impl.set('')
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "EL CAMPO DE BÚSQUEDA SE ENCUENTRA VACÍO\n"
+                                                                "INGRESE EL NOMBRE DEL ASESOR.")
 
     def show_data_impl(self):
-        self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-        self.curr = self.connect.cursor()
-        self.curr.execute("SELECT * FROM implementos")
-        self.rows = self.curr.fetchall()
+        try:
+            obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_implements_database.get_database())
 
-        if len(self.rows) != 0:
-
+            query = "select * from implementos;"
+            data = self.db_connection.select(query)
             self.Table.delete(*self.Table.get_children())
-            for self.row in self.rows:
-                self.Table.insert('', 0, values=self.row)
 
-            self.connect.commit()
-        self.connect.close()
+            for values in data:
+                data_list = [values[0], values[1], values[2]]
+                self.Table.insert('', END, values=data_list)
 
-    def conex_impl(self):
-        self.conn = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-        self.curr = self.conn.cursor()
-        self.curr.execute("SELECT nombre_curso FROM cursos")
-        self.result = self.curr.fetchall()
-        self.conn.commit()
-
-        return self.result
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                 f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                 f"REVISE LA CONEXIÓN: {msg}")
 
     def logout(self):
         root = Toplevel()

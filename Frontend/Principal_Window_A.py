@@ -68,7 +68,7 @@ class Principal:
         # AÑADIENDO OPCIONES AL MENÚ ALUMNO
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column1)
-        self.Column1.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column1.add_command(label='Alumnos', command=self.student_btn)
         self.Column1.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column2 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -77,7 +77,7 @@ class Principal:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column2)
-        self.Column2.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column2.add_command(label='Asesores', command=self.assesor_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -85,8 +85,8 @@ class Principal:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column3)
-        self.Column3.add_command(label='Menú Cursos', command=self.courses_btn)
-        self.Column3.add_command(label='Menú Paralelos', command=self.paralelos_btn)
+        self.Column3.add_command(label='Cursos', command=self.courses_btn)
+        self.Column3.add_command(label='Paralelos', command=self.paralelos_btn)
         self.Column3.add_command(label='Implementos', command=self.implements_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -95,7 +95,7 @@ class Principal:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column4)
-        self.Column4.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column4.add_command(label='Facturación', command=self.facturation_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -103,12 +103,12 @@ class Principal:
         # CREACIÓN DEL DE MENÚ REPORTES
         # =============================================================
         self.menus.add_cascade(label='REPORTES', menu=self.Column5)
-        self.Column5.add_command(label='Menú Reportes', command=self.report_btn)
+        self.Column5.add_command(label='Generar Reportes', command=self.report_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
+        # CREACIÓN DEL DE MENÚ USUARIOS
         # =============================================================
         self.menus.add_cascade(label='USUARIOS', menu=self.Column6)
         self.Column6.add_command(label='Cambiar Usuario', command=self.logout)

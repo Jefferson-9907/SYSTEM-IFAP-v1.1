@@ -559,10 +559,11 @@ class Student:
             if ask is True:
                 query = "delete from estudiantes where id_estudiante=?;"
                 self.db_connection.delete(query, tree_view_values)
+
                 self.show_data()
-                self.clear_field()
                 messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ESTUDIANTE: {tree_view_values} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
+                self.clear_field()
 
             else:
                 pass

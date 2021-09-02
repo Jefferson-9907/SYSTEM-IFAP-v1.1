@@ -1,8 +1,12 @@
 # Import Modules
+import random
 from _datetime import datetime
 from tkinter import *
-import mariadb
-from tkinter import messagebox, ttk
+from tkinter import messagebox
+
+import Backend.connection
+import Model_class.users_registration
+from Backend.conexion import conn
 
 
 class Password:
@@ -13,16 +17,29 @@ class Password:
         self.root.title("SYST_CONTROL--›Usuarios")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
+        self.root.configure(bg='#a27114')
 
-        self.barra1 = Label(self.root)
-        self.barra1.config(bg='black', padx=681, pady=20)
-        self.barra1.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.barra2 = Label(self.root)
-        self.barra2.config(bg="#a27114", padx=681, pady=10)
-        self.barra2.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.texto1 = Label(self.root, text='SYSTEM CONTROL (USUARIOS: CAMBIAR CONTRASEÑA)')
-        self.texto1.config(font=("Copperplate Gothic Bold", 20, "bold"), fg='black', bg="#a27114")
-        self.texto1.grid(row=0, column=0, sticky='w', padx=75, pady=0)
+        imagenes = {
+            'nuevo': PhotoImage(file='./recursos/icon_aceptar.png')
+        }
+
+        # =============================================================
+        # BANNER PANTALLA ASESORES
+        # =============================================================
+
+        self.txt = "SYSTEM CONTROL IFAP (CAMBIAR CONTRASEÑA)"
+        self.count = 0
+        self.text = ''
+        self.color = ["#4f4e4d", "#f29844", "red2"]
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
+                             fg='black', bd=5, relief=FLAT)
+        self.heading.place(x=0, y=0, width=1367)
+
+        self.slider()
+        self.heading_color()
+
+        # ======================Backend connection=============
+        self.db_connection = Backend.connection.DatabaseConnection()
 
         # =============================================================
         # CREACIÓN DE LA BARRA DE MENÚ
@@ -51,9 +68,6 @@ class Password:
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
-
-        self.cuaderno = ttk.Notebook(self.root, width=1340, height=625)
-        self.cuaderno.grid(row=1, column=0, sticky='nw', padx=10, pady=5)
 
         # =============================================================
         # CREACIÓN DEL MENÚ ASESORES
@@ -87,7 +101,7 @@ class Password:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
+        # CREACIÓN DEL DE MENÚ USUARIOS
         # =============================================================
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
@@ -102,8 +116,6 @@ class Password:
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
         self.menus.add_cascade(label='INFO', menu=self.Column8)
-        self.Column8.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
-        self.Column8.add_separator()
         self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
         self.Column8.add_separator()
         self.root.config(menu=self.menus)
@@ -122,20 +134,21 @@ class Password:
         self.footer_4.place(x=0, y=725)
 
         # Manage Frame
-        self.Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#0d1e24')
+        self.Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
         self.Manage_Frame.place(x=375, y=200, width=600, height=300)
 
         self.m_title = Label(self.Manage_Frame, text="-ADMINISTAR USUARIOS-\nCAMBIAR CONTRASEÑA",
-                             font=("Copperplate Gothic Bold", 16, "bold"), bg='#0d1e24', fg="White")
-        self.m_title.grid(row=0, column=0, columnspan=1, padx=10, pady=30)
+                             font=("Copperplate Gothic Bold", 16, "bold"), bg='#a27114', fg="White")
+        self.m_title.grid(row=0, column=0, columnspan=1, padx=130, pady=30)
 
         # Variables
         self.username = StringVar()
         self.old_password = StringVar()
         self.new_password = StringVar()
+        self.new_password_r = StringVar()
 
-        self.User_Frame = Frame(self.Manage_Frame, bg='#0d1e24')
-        self.User_Frame.grid(row=1, column=0, padx=100, pady=10)
+        self.User_Frame = Frame(self.Manage_Frame, bg='#a27114')
+        self.User_Frame.place(x=100, y=100, width=350, height=150)
 
         self.lbl_us = Label(self.User_Frame, text="USUARIO", width='10', font=('Copperplate Gothic Bold', 10),
                             bg='#808080', fg="#0A090C")
@@ -159,9 +172,42 @@ class Password:
         self.e_n_cont = Entry(self.User_Frame, show="*", textvariable=self.new_password, bd=5, relief=GROOVE)
         self.e_n_cont.grid(row=3, column=1, padx=10, pady=5, sticky="W")
 
-        self.chg_btn = Button(self.Manage_Frame, text="CAMBIAR CONTRASEÑA", font=('Copperplate Gothic Bold', 10),
-                              bg="#00A1E4", fg="#FFFCF9", relief=GROOVE, width=20, command=self.change_pass)
-        self.chg_btn.grid(row=2, column=0, padx=200, pady=5)
+        self.l_n_cont_r = Label(self.User_Frame, text="REPITA CONTRASEÑA", font=('Copperplate Gothic Bold', 10),
+                                bg='#808080', fg="#0A090C")
+        self.l_n_cont_r.grid(row=4, column=0, padx=0, pady=5, sticky="E")
+
+        self.e_n_cont_r = Entry(self.User_Frame, show="*", textvariable=self.new_password_r, bd=5, relief=GROOVE)
+        self.e_n_cont_r.grid(row=4, column=1, padx=10, pady=5, sticky="W")
+
+        self.chg_btn = Button(self.Manage_Frame, image=imagenes['nuevo'], text='CAMBIAR CONTRASEÑA', width=150,
+                              command=self.change_pass, compound="right")
+        self.chg_btn.image = imagenes['nuevo']
+        self.chg_btn.place(x=225, y=250)
+
+    def slider(self):
+        """creates slides for heading by taking the text,
+        and that text are called after every 100 ms"""
+        if self.count >= len(self.txt):
+            self.count = -1
+            self.text = ''
+            self.heading.config(text=self.text)
+
+        else:
+            self.text = self.text + self.txt[self.count]
+            self.heading.config(text=self.text)
+        self.count += 1
+
+        self.heading.after(100, self.slider)
+
+    def heading_color(self):
+        """
+        configures heading label
+        :return: every 50 ms returned new random color.
+
+        """
+        fg = random.choice(self.color)
+        self.heading.config(fg=fg)
+        self.heading.after(50, self.heading_color)
 
     def change_pass(self):
         if self.username.get() == '':
@@ -173,28 +219,37 @@ class Password:
             messagebox.showerror("SYST_CONTROL(IFAP®) (ERROR)", "POR FAVOR INGRESE EL CAMPO: CONTRASEÑA NUEVA")
 
         else:
-            self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-            self.curr = self.connect.cursor()
-            sql = "SELECT contraseña FROM usuarios WHERE usuario='" + self.username.get() + "' and contraseña='" \
-                  + self.old_password.get() + "'"
-            self.curr.execute(sql)
+            with conn.cursor() as cursor:
+                query = "SELECT contrasena FROM usuarios WHERE usuario=? AND contrasena=?"
+                values = (self.username.get(), self.old_password.get())
+                cursor.execute(query, values)
+                resultado = cursor.fetchall()
 
-            if self.curr.fetchall():
-                self.connect = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-                self.curr = self.connect.cursor()
-                self.sql = f"""UPDATE usuarios SET contraseña='{self.new_password.get()}'\
-                WHERE usuario='{self.username.get()}'"""
-                self.curr.execute(self.sql)
-                self.connect.commit()
+                if resultado:
+                    try:
+                        obj_students_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
+                        self.db_connection.create(obj_students_database.get_database())
 
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", "CAMBIO DE CONTRASEÑA EXITOSO\nUSUARIO: " +
-                                    self.username.get() + "\nCONTRASEÑA: " + self.new_password.get())
-                self.limpiar()
+                        query = f"""UPDATE usuarios SET contrasena=? WHERE usuario=?"""
 
-            else:
-                messagebox.showerror("ERROR!!!", "NO SE PUDO REALIZAR LA ACCIÓN: CAMBIO DE CONTRASEÑA.\n"
-                                                 "\t(INGRESE SU CREDENCIALES ACTUALES)")
-                self.limpiar()
+                        values = (self.new_password.get(), self.username.get())
+                        self.db_connection.update(query, values)
+
+                        messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "CAMBIO DE CONTRASEÑA EXITOSO\nUSUARIO: " +
+                                            self.username.get() + "\nCONTRASEÑA: " + self.new_password.get())
+                        messagebox.showwarning("SYST_CONTROL(IFAP®)-->(RE-INGRESO)", "UD REALIZÓ UN CAMBIO DE "
+                                                                                     "CONTRASEÑA RECIENTEMENTE\n"
+                                                                                     "DEBE DE INGRESAR NUEVAMENTE")
+                        self.logout()
+
+                    except BaseException as msg:
+                        messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                             f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                             f"REVISE LA CONEXIÓN: {msg}")
+                else:
+                    messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
+                                         f"CREDENCIALES INCORRECTAS, INTENTE NUEVAMENTE!!!")
+                    self.limpiar()
 
     def limpiar(self):
         self.username.set('')

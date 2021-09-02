@@ -159,7 +159,7 @@ class Reports:
     def principal_btn(self):
         self.root.destroy()
 
-        from Frontend.Administrador.Principal_Window_A import Principal
+        from Frontend.Principal_Window_A import Principal
         st_root = Tk()
         Principal(st_root)
         st_root.mainloop()

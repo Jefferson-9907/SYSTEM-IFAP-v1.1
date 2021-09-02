@@ -1,6 +1,7 @@
 # Import Modules
 import random
 from _datetime import datetime
+from time import strftime
 from tkinter import *
 from tkinter import messagebox
 
@@ -121,17 +122,23 @@ class Password:
         self.root.config(menu=self.menus)
 
         data = datetime.now()
-        fomato_f = " %A %d/%B/%Y   %H:%M:%S %p "
-        self.footer = Label(self.root, text='  FECHA Y HORA DE INGRESO: ', font=("Cooper Black", 10), bg='Honeydew2',
-                            relief=RIDGE)
-        self.footer.place(x=0, y=703)
-        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='Honeydew2',
-                              relief=RIDGE)
-        self.footer_1.place(x=212, y=704)
+        fomato_f = " %A %d/%B/%Y"
 
-        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+        self.footer = Label(self.root, text='  FECHA Y HORA: ', font=("Cooper Black", 9), bg='black',
+                            fg='white')
+        self.footer.place(x=930, y=725)
+        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='black',
                               fg='white')
-        self.footer_4.place(x=0, y=725)
+        self.footer_1.place(x=1040, y=727)
+
+        self.clock = Label(self.root)
+        self.clock['text'] = '00:00:00'
+        self.clock['font'] = 'Tahoma 9 bold'
+        self.clock['bg'] = 'black'
+        self.clock['fg'] = 'white'
+        self.clock.place(x=1275, y=725)
+        self.tic()
+        self.tac()
 
         # Manage Frame
         self.Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
@@ -183,6 +190,13 @@ class Password:
                               command=self.change_pass, compound="right")
         self.chg_btn.image = imagenes['nuevo']
         self.chg_btn.place(x=225, y=250)
+
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
+
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
 
     def slider(self):
         """creates slides for heading by taking the text,

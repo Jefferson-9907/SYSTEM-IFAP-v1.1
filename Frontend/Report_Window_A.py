@@ -1,7 +1,21 @@
 # Import Modules
+import random
 from _datetime import datetime
+from time import strftime
 from tkinter import *
 from tkinter import messagebox, ttk
+
+import Frontend.Principal_Window_A
+import Frontend.login_form
+import Frontend.Student_Window_A
+import Frontend.Course_Window_A
+import Frontend.Matricula_Window_A
+import Frontend.Assesor_Window_A
+import Frontend.Paralelo_Window_A
+import Frontend.Implements_Window_A
+import Frontend.Facturation_Window_A
+import Frontend.Password_Window_A
+import Frontend.Users_Window_A
 
 
 class Reports:
@@ -16,6 +30,17 @@ class Reports:
         imagenes = {
             'nuevo': PhotoImage(file='./recursos/icon_export.png'),
         }
+
+        self.txt = "SYSTEM CONTROL IFAP (REPORTES)"
+        self.count = 0
+        self.text = ''
+        self.color = ["#4f4e4d", "#f29844", "red2"]
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
+                             fg='black', bd=5, relief=FLAT)
+        self.heading.place(x=0, y=0, width=1367)
+
+        self.slider()
+        self.heading_color()
 
         self.barra1 = Label(self.root)
         self.barra1.config(bg='black', padx=681, pady=20)
@@ -113,15 +138,23 @@ class Reports:
         self.root.config(menu=self.menus)
 
         data = datetime.now()
-        fomato_f = " %A %d/%B/%Y   %H:%M:%S %p "
-        self.footer = Label(self.root, text='  FECHA Y HORA DE INGRESO: ', font=("Cooper Black", 10), bg='Honeydew2',
-                            relief=RIDGE)
-        self.footer.place(x=0, y=703)
-        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='Honeydew2',
-                              relief=RIDGE)
-        self.footer_1.place(x=212, y=704)
-        self.footer_4 = Label(self.root, text='DESING® | Derechos Reservados 2021', width=195, bg='black', fg='white')
-        self.footer_4.place(x=0, y=725)
+        fomato_f = " %A %d/%B/%Y"
+
+        self.footer = Label(self.root, text='  FECHA Y HORA: ', font=("Cooper Black", 9), bg='black',
+                            fg='white')
+        self.footer.place(x=930, y=725)
+        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='black',
+                              fg='white')
+        self.footer_1.place(x=1040, y=727)
+
+        self.clock = Label(self.root)
+        self.clock['text'] = '00:00:00'
+        self.clock['font'] = 'Tahoma 9 bold'
+        self.clock['bg'] = 'black'
+        self.clock['fg'] = 'white'
+        self.clock.place(x=1275, y=725)
+        self.tic()
+        self.tac()
 
         self.Manage_Frame_report = Frame(self.root, relief=RIDGE, bd=4, bg='#0d1e24')
         self.Manage_Frame_report.place(x=25, y=75, width=1310, height=605)
@@ -148,69 +181,108 @@ class Reports:
         self.gen_report_btn1.image = imagenes['nuevo']
         self.gen_report_btn1.grid(row=1, column=0, padx=15, pady=10, sticky="W")
 
-    def logout(self):
-        self.root.destroy()
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
 
-        from Frontend.login_form import Login
-        st_root = Tk()
-        Login(st_root)
-        st_root.mainloop()
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
+
+    def slider(self):
+        """creates slides for heading by taking the text,
+        and that text are called after every 100 ms"""
+        if self.count >= len(self.txt):
+            self.count = -1
+            self.text = ''
+            self.heading.config(text=self.text)
+
+        else:
+            self.text = self.text + self.txt[self.count]
+            self.heading.config(text=self.text)
+        self.count += 1
+
+        self.heading.after(100, self.slider)
+
+    def heading_color(self):
+        """
+            configures heading label
+            :return: every 50 ms returned new random color.
+        """
+        fg = random.choice(self.color)
+        self.heading.config(fg=fg)
+        self.heading.after(50, self.heading_color)
+
+    def logout(self):
+        root = Toplevel()
+        Frontend.login_form.Login(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def principal_btn(self):
-        self.root.destroy()
-
-        from Frontend.Principal_Window_A import Principal
-        st_root = Tk()
-        Principal(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Principal_Window_A.Principal(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def student_btn(self):
-        self.root.destroy()
-
-        from Frontend.Administrador.Student_Window_A import Student
-        st_root = Tk()
-        Student(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Student_Window_A.Student(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def matricula_btn(self):
-        self.root.destroy()
-
-        from Frontend.Administrador.Matricula_Window_A import Matricula
-        st_root = Tk()
-        Matricula(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Matricula_Window_A.Matricula(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def assesor_btn(self):
-        self.root.destroy()
-
-        from Frontend.Administrador.Assesor_Window_A import Assesor
-        st_root = Tk()
-        Assesor(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Assesor_Window_A.Assesor(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def courses_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Course_Window_A.Course(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Administrador.Course_Window_A import Course
-        st_root = Tk()
-        Course(st_root)
-        st_root.mainloop()
+    def paralelos_btn(self):
+        root = Toplevel()
+        Frontend.Paralelo_Window_A.Paralelo(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def implements_btn(self):
+        root = Toplevel()
+        Frontend.Implements_Window_A.Implement(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def facturation_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Administrador.Facturation_Window_A import Ventana_Principal
-        st_root = Tk()
-        Ventana_Principal(st_root)
-        st_root.mainloop()
+    def report_btn(self):
+        root = Toplevel()
+        Frontend.Report_Window_A.Reports(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def pass_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Password_Window_A.Password(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Administrador.Password_Window_A import Password
-        st_root = Tk()
-        Password(st_root)
-        st_root.mainloop()
+    def users_btn(self):
+        root = Toplevel()
+        Frontend.Users_Window_A.Users(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def salir_principal(self):
         self.sa = messagebox.askyesno('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')

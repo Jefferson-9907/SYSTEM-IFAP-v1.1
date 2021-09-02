@@ -429,7 +429,7 @@ class Student:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
 
         elif self.e_cedula_al.get() in self.estudiante_list:
-            messagebox.showerror("YA EXISTE!!!", f"EL ESTUDIANTE CON No. DE CÉDULA: {self.e_cedula_al.get()} "
+            messagebox.showerror("YA EXISTE!!!", f"EL ESTUDIANTE CON No. DE CÉDULA: {self.e_cedula_al.get()}\n"
                                                  f"YA EXISTE!")
         else:
             self.click_submit()
@@ -454,7 +454,7 @@ class Student:
 
             self.show_data()
             self.clear_field()
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"ESTUDIANTE: {values[1]} {values[2]}\n "
+            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"ESTUDIANTE: {values[1]} {values[2]}\n"
                                                        f"CON No. DE CÉDULA: {values[0]}\n"
                                                        f"REGISTRADO CORRECTAMENTE")
 

@@ -1,21 +1,26 @@
-import mariadb
-
-
-def solo_numero(char):
-    return char in '1234567890.'
+from socket import gethostname
+from tkinter import messagebox
+import pyodbc
 
 
 def conexion_consulta(consulta, parametros=()):
-    conexion = mariadb.connect(host="localhost", user="root", passwd="", database="system_bd_ifap")
-    try:  # Captura la excepcion en caso de que algo falle
-        cursor = conexion.cursor()
+    driver = "{ODBC Driver 17 for SQL Server}"
+    server = gethostname() + "\SQLEXPRESS"
+    database = "ddbb_sys_ifap"
+    try:
+        conn = pyodbc.connect('DRIVER=' + driver + ';'
+                                                   'SERVER=' + server + ';'
+                                                                        'Database=' + database + ';'
+                                                                                                 'Trusted_Connection'
+                                                                                                 '=yes;')
+        cursor = conn.cursor()
         conexion_consulta(consulta, parametros)
         resultado = cursor.execute(consulta, parametros)  # Establece la consulta sql a realizar y sus parametros
-        conexion.commit()
+        conn.commit()
 
         return resultado
 
-    except Exception as e:
-        print(e)
-        conexion.close()
-        return False
+    except BaseException as msg:
+        messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
+                                                              f"REVISE LA CONEXIÓN: {msg}")
+

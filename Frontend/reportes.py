@@ -1,11 +1,8 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle, Image, BaseDocTemplate
-from reportlab.lib.colors import red, black, red, blue, green
-from datetime import datetime
-from reportlab.lib.pagesizes import LETTER, inch, landscape, letter
-import os
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib.colors import black
 
 
 class ReciboFactura:
@@ -20,22 +17,12 @@ class ReciboFactura:
         titulo = str(data.strftime(fomato_f))"""
 
         titulo = 'Factura-PRUEBA.pdf'
-        # nombre_pdf = os.path.join('Facturas/', titulo)
-        # self.factura = canvas.Canvas(titulo, pagesize=A4)
 
         self.factura = canvas.Canvas(titulo, pagesize=A4)
-        # self.factura.setPageSize(landscape(A4))
-
-        """self.elements = []
-        logo = "./imagenes/icon_fact.png"
-        my_image = Image(logo, 2 * inch, 2 * inch)
-        self.elements.append(my_image)"""
 
     def crear_esqueleto(self):
         _, h = A4
         # ORIGINAL
-        # self.factura.setFont("Times-Roman", 16)
-        # self.factura.drawString(225, h - 120, "Id Factura: ")
         self.factura.line(x1=20, x2=580, y1=h - 125, y2=h - 125)
         self.factura.setFont("Times-Roman", 11)
         self.factura.drawString(20, h - 135, 'NOMBRE:')
@@ -46,8 +33,6 @@ class ReciboFactura:
         self.factura.drawString(235, h - 200, "DETALLE DE LA FACTURA")
 
         # CLIENTE
-        # self.factura.setFont("Times-Roman", 16)
-        # self.factura.drawString(225, h - 575, "Id Factura: ")
         self.factura.line(x1=20, x2=580, y1=h - 580, y2=h - 580)
         self.factura.setFont("Times-Roman", 11)
         self.factura.drawString(20, h - 590, 'NOMBRE:')
@@ -103,9 +88,6 @@ class ReciboFactura:
 
     def llenar_factura(self, object, punto):
         w, h = A4
-        # self.factura.setFont("Times-Roman", 16)
-        # self.factura.setFillColor(red)
-        # self.factura.drawString(350, h - 120, str(object.id_factura))
         self.factura.setFont("Times-Roman", 11)
         self.factura.setFillColor(black)
         self.factura.drawString(110, h - 135, str(object.nom_ape_al))
@@ -117,10 +99,6 @@ class ReciboFactura:
         self.factura.drawString(540, punto - 105, str(object.pago))
         self.factura.drawString(540, punto - 125, str(object.cambio))
 
-        # self.factura.setFont("Times-Roman", 16)
-        # self.factura.setFillColor(red)
-        # self.factura.drawString(350, h - 575, str(object.id_factura))
-        # self.factura.setFont("Times-Roman", 11)
         self.factura.setFillColor(black)
         self.factura.drawString(110, h - 590, str(object.nom_ape_al))
         self.factura.drawString(110, h - 605, str(object.n_c_al))

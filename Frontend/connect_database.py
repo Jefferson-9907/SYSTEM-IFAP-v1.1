@@ -342,6 +342,28 @@ class ConnectDatabase:
                 'UNIQUE (estudiante));')
             self.db_connection.create(obj_create_database.get_database())
 
+            obj_create_database = Model_class.connect_database.CreateDatabase(
+                'CREATE TABLE facturas('
+                'id_factura VARCHAR(100) NOT NULL,'
+                'id_estudiante VARCHAR(100) NOT NULL,'
+                'fecha VARCHAR(50) NOT NULL,'
+                'hora VARCHAR(50) NOT NULL,'
+                'PRIMARY KEY (id_factura),'
+                'FOREIGN KEY (id_estudiante) REFERENCES estudiantes (id_estudiante));')
+            self.db_connection.create(obj_create_database.get_database())
+
+            obj_create_database = Model_class.connect_database.CreateDatabase(
+                'CREATE TABLE detalle_facturas('
+                'id_detalle_factura VARCHAR(100) NOT NULL,'
+                'id_factura VARCHAR(100) NOT NULL,'
+                'id_implemento INT NOT NULL,'
+                'cantidad VARCHAR(50) NOT NULL,'
+                'total_factura VARCHAR(50) NOT NULL,'
+                'PRIMARY KEY (id_detalle_factura),'
+                'FOREIGN KEY (id_Factura) REFERENCES facturas (id_factura),'
+                'FOREIGN KEY (id_implemento) REFERENCES implementos (id_implemento));')
+            self.db_connection.create(obj_create_database.get_database())
+
             messagebox.showinfo("ÉXITO!!!", "TABLAS DE LA BASE DE DATOS CREADAS CO0RRECTAMENTE.")
 
         except BaseException as msg:

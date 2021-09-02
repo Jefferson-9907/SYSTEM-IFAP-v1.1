@@ -500,7 +500,7 @@ class Implement:
 
                         if self.output:
                             messagebox.showinfo("SYST_CONTROL(IFAP®)-->ENCONTRADO",
-                                                f"EL ASESOR: '{self.output}' HA SIDO ENCONTRADO")
+                                                f"EL IMPLEMENTO: '{self.output}' HA SIDO ENCONTRADO")
 
                             obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
                             self.db_connection.create(obj_implements_database.get_database())
@@ -517,7 +517,7 @@ class Implement:
 
                         else:
                             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR",
-                                                 "ASESOR NO ENCONTRADO,\nSE MOSTRARÁN RESULTADOS RELACIONADOS.")
+                                                 "IMPLEMENTO NO ENCONTRADO,\nSE MOSTRARÁN RESULTADOS RELACIONADOS.")
 
                             obj_implements_database = Model_class.implement_registration.GetDatabase('use '
                                                                                                      'ddbb_sys_ifap;')
@@ -543,7 +543,7 @@ class Implement:
                     self.show_data_impl()
         else:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "EL CAMPO DE BÚSQUEDA SE ENCUENTRA VACÍO\n"
-                                                                "INGRESE EL NOMBRE DEL ASESOR.")
+                                                                "INGRESE EL NOMBRE DEL IMPLEMENTO.")
 
     def show_data_impl(self):
         try:

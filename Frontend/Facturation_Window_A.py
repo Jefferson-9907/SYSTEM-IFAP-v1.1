@@ -244,7 +244,7 @@ class Ventana_Principal:
 
         self.codigo_factura = StringVar()
 
-        try:
+        """try:
             obj_courses_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_courses_database.get_database())
 
@@ -257,11 +257,11 @@ class Ventana_Principal:
                 self.id_list.append(id_factura)
 
         except BaseException as msg:
-            print(msg)
+            print(msg)"""
 
         self.txt_cod_factura = Entry(self.label_facturacion, state='readonly', textvariable=self.codigo_factura,
                                      fg='Red', width=10, font=('Copperplate Gothic Bold', 14), relief=RIDGE)
-        self.codigo_factura.set(self.id_list)
+        self.codigo_factura.set("000000001")
         self.txt_cod_factura.place(x=375, y=10)
 
         self.search_field = StringVar()
@@ -506,8 +506,10 @@ class Ventana_Principal:
          Funcion asociada para agregar un producto a la
          factura
         """
+        self.cod_factura = self.codigo_factura.get()
+
         producto_factura = ProductoFacturar()
-        producto_factura.id_factura = self.codigo_factura.get()
+        producto_factura.id_factura = self.cod_factura
         producto_factura.id = self.codigo.get()
         producto_factura.descripcion = self.descripcion.get()
         producto_factura.precio = float(self.precio.get())
@@ -660,7 +662,7 @@ class Ventana_Principal:
             for productos_factura in self.factura.lista_productos:
                 productos_factura.guardar()
 
-            factura.id_factura = self.codigo_factura.get()
+            factura.id_factura = self.cod_factura
             id_al = self.name_e.get()
             lista_al = id_al.split('_')
             factura.id_alumno = lista_al[0]
@@ -668,12 +670,13 @@ class Ventana_Principal:
             factura.n_c_al = self.e_n_ced_al.get()
             factura.dir_al = self.dir_e_al.get()
             data = datetime.now()
-            fomato_f = "%A %d-%B-%Y--%H:%M:%S %p "
+
             form_fecha = "%d-%m-%Y"
-            factura.fecha = str(data.strftime(form_fecha))
             form_hora = "%H:%M:%S"
+
+            factura.fecha_creacion = str(data.strftime(form_fecha))
             factura.hora = str(data.strftime(form_hora))
-            factura.fecha_creacion = str(data.strftime(fomato_f))
+
             factura.pago = self.txt_pago.get()
             factura.cambio = self.cambio.get()
             recibo = ReciboFactura()  # Instancia del recibo factura

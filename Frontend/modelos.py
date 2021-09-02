@@ -7,6 +7,7 @@ import Backend.connection
 import Model_class.facturas_registration
 import Model_class.detalle_facturas_registration
 
+
 class Producto:
 
     def __init__(self, *args, **kwargs):
@@ -68,12 +69,13 @@ class ProductoFacturar(Producto):
             self.db_connection.create(obj_course_database.get_database())
 
             query = 'INSERT INTO detalle_facturas (id_detalle_factura, id_factura, id_implemento, cantidad, ' \
-                   'total_factura) VALUES(?, ?, ?, ?, ?)'
+                    'total_factura) VALUES(?, ?, ?, ?, ?)'
             values = (self.id_factura, self.id_implemento, self.precio, self.cantidad)
             self.db_connection.insert(query, values)
 
         except BaseException as msg:
             messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")
+
 
 class Factura(ReciboFactura):
 
@@ -81,9 +83,9 @@ class Factura(ReciboFactura):
         super(Factura, self).__init__(*args, **kwargs)
 
         self.id_factura = ''
-        self.e_n_ced_al = ''
+        self.search_field = ''
         self.fecha_creacion = ''
-        self.hora_creacion = ''
+        self.hora = ''
         self.lista_productos = []
 
         # ======================Backend connection=============
@@ -95,11 +97,11 @@ class Factura(ReciboFactura):
             self.db_connection.create(obj_course_database.get_database())
 
             query = 'INSERT INTO facturas (id_factura, id_estudiante, fecha, hora) VALUES(?, ?, ?, ?)'
-            values = (self.id_factura, self.e_n_ced_al, self.fecha_creacion, self.hora_creacion)
+            values = (self.id_factura, self.search_field, self.fecha_creacion, self.hora)
             self.db_connection.insert(query, values)
 
         except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")
+            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA FACTURA {msg}")
 
     def remover_producto(self, nombre):
         for lista_productos in self.lista_productos:

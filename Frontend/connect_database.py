@@ -260,7 +260,7 @@ class ConnectDatabase:
                 'nombres VARCHAR(50) NOT NULL,'
                 'apellidos VARCHAR(50) NOT NULL,'
                 'edad INT NOT NULL,'
-                'direccion VARCHAR(50) NOT NULL,'
+                'direccion VARCHAR(100) NOT NULL,'
                 'correo VARCHAR(50) NOT NULL,'
                 'celular VARCHAR(20) NOT NULL,'
                 'telefono VARCHAR(20) NOT NULL,'

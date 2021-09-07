@@ -11,37 +11,35 @@ from tkinter.ttk import Treeview
 import Backend.connection
 import Model_class.paralelos_registration
 
-import Frontend.Principal_Window_A
 import Frontend.login_form
-import Frontend.Student_Window_A
-import Frontend.Matricula_Window_A
-import Frontend.Assesor_Window_A
-import Frontend.Course_Window_A
-import Frontend.Implements_Window_A
-import Frontend.Facturation_Window_A
-import Frontend.Report_Window_A
-import Frontend.Password_Window_A
-import Frontend.Users_Window_A
+import Frontend.Secretary.Principal_Window_S
+import Frontend.Secretary.Student_Window_S
+import Frontend.Secretary.Matricula_Window_S
+import Frontend.Secretary.Assesor_Window_S
+import Frontend.Secretary.Course_Window_S
+import Frontend.Secretary.Paralelo_Window_S
+import Frontend.Secretary.Implements_Window_S
+import Frontend.Secretary.Password_Window_S
 
 
-class Paralelo:
+class Paralelo_S:
 
     def __init__(self, root):
         self.root = root
         self.root.title("SYST_CONTROL--›Paralelos")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
-        self.root.iconbitmap('./recursos/ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
         self.root.configure(bg='#a27114')
 
         imagenes = {
-            'nuevo': PhotoImage(file='./recursos/icon_aceptar.png'),
-            'editar': PhotoImage(file='./recursos/icon_update.png'),
-            'eliminar': PhotoImage(file='./recursos/icon_del.png'),
-            'limpiar': PhotoImage(file='./recursos/icon_clean.png'),
-            'buscar': PhotoImage(file='./recursos/icon_buscar.png'),
-            'todo': PhotoImage(file='./recursos/icon_ver_todo.png'),
-            'actualizar': PhotoImage(file='./recursos/icon_upd.png')
+            'nuevo': PhotoImage(file='recursos\\icon_aceptar.png'),
+            'editar': PhotoImage(file='recursos\\icon_update.png'),
+            'eliminar': PhotoImage(file='recursos\\icon_del.png'),
+            'limpiar': PhotoImage(file='recursos\\icon_clean.png'),
+            'buscar': PhotoImage(file='recursos\\icon_buscar.png'),
+            'todo': PhotoImage(file='recursos\\/icon_ver_todo.png'),
+            'actualizar': PhotoImage(file='recursos\\icon_upd.png')
 
         }
 
@@ -805,67 +803,49 @@ class Paralelo:
 
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Principal_Window_A.Principal(root)
+        Frontend.Secretary.Principal_Window_S.Principal_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Student_Window_A.Student(root)
+        Frontend.Secretary.Student_Window_S.Student_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Matricula_Window_A.Matricula(root)
+        Frontend.Secretary.Matricula_Window_S.Matricula_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Assesor_Window_A.Assesor(root)
+        Frontend.Secretary.Assesor_Window_S.Assesor_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Course_Window_A.Course(root)
+        Frontend.Secretary.Course_Window_S.Course_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Paralelo_Window_A.Paralelo(root)
+        Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def facturation_btn(self):
-        root = Toplevel()
-        Frontend.Facturation_Window_A.Ventana_Principal(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def report_btn(self):
-        root = Toplevel()
-        Frontend.Report_Window_A.Reports(root)
+        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Password_Window_A.Password(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def users_btn(self):
-        root = Toplevel()
-        Frontend.Users_Window_A.Users(root)
+        Frontend.Secretary.Password_Window_S.Password_S(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -891,7 +871,7 @@ def root():
     root = tk.ThemedTk()
     root.get_themes()
     root.set_theme("arc")
-    Paralelo(root)
+    Paralelo_S(root)
     root.mainloop()
 
 

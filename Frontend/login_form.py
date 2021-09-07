@@ -10,7 +10,11 @@ import Frontend.connect_database
 import Frontend.database_connected
 import Backend.connection
 
-from Principal_Window_A import Principal
+from Frontend.Admin.Principal_Window_A import Principal
+from Frontend.Secretary.Principal_Window_S import Principal_S
+"""
+    from Frontend.Facturation.Principal_Window import Principal_S
+"""
 
 
 class Login:
@@ -223,6 +227,11 @@ class Login:
                                                                            f"ACCIÓN: {self.accion}\n"
                                                                            f"FECHA: {self.fecha}\n"
                                                                            f"HORA: {self.hora}")
+                                root = Toplevel()
+                                Principal_S(root)
+                                self.root.withdraw()
+                                root.deiconify()
+
                             else:
                                 self.tipo = 'Caja'
                                 self.accion = "INGRESO (USUARIO CAJA)"
@@ -241,14 +250,16 @@ class Login:
                                                                                f"HORA: {self.hora}")
 
                                 else:
-                                    messagebox.showwarning("SYST_CONTROL(IFAP®)-->ERROR", "CREDENCIALES INCORRECTAS,\n"
-                                                                                          "INTÉNTELO NUEVAMENTE")
+                                    messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR",
+                                                         f"EL USUARIO: {self.username_entry.get()} "
+                                                         "NO EXISTE\nINTÉNTELO NUEVAMENTE")
                                     self.username_entry.delete(0, END)
                                     self.password_entry.delete(0, END)
                                     self.username_entry.focus()
+
                     else:
-                        messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", f"EL USUARIO: {self.username_entry.get()} "
-                                                                            "NO EXISTE\nINTÉNTELO NUEVAMENTE")
+                        messagebox.showwarning("SYST_CONTROL(IFAP®)-->ERROR", "CREDENCIALES INCORRECTAS,\n"
+                                                                              "INTÉNTELO NUEVAMENTE")
                         self.username_entry.delete(0, END)
                         self.password_entry.delete(0, END)
                         self.username_entry.focus()

@@ -1,37 +1,52 @@
 # Import Modules
 from _datetime import datetime
+from time import strftime
 from tkinter import *
+from ttkthemes import themed_tk as tk
+import random
 from tkinter import messagebox
+
+import Frontend.login_form
+import Frontend.Secretary.Student_Window_S
+import Frontend.Secretary.Matricula_Window_S
+import Frontend.Secretary.Assesor_Window_S
+import Frontend.Secretary.Course_Window_S
+import Frontend.Secretary.Paralelo_Window_S
+import Frontend.Secretary.Implements_Window_S
+import Frontend.Secretary.Password_Window_S
 
 
 class Principal_S:
-
     def __init__(self, root):
         self.root = root
         self.root.title("SYST_CONTROL--›Principal")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
+        self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.configure(bg='#a27114')
 
         imagenes = {
-            'fondo': PhotoImage(file='./recursos/FONDO_PRINCIPAL1.png'),
+            'fondo': PhotoImage(file='recursos\\FONDO_PRINCIPAL1.png'),
         }
-
-        self.barra1 = Label(self.root)
-        self.barra1.config(bg='black', padx=681, pady=20)
-        self.barra1.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.barra2 = Label(self.root)
-        self.barra2.config(bg="#a27114", padx=681, pady=10)
-        self.barra2.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.texto1 = Label(self.root, text='SYSTEM CONTROL (INICIO)')
-        self.texto1.config(font=("Britannic", 20, "bold"), fg='black', bg="#a27114")
-        self.texto1.grid(row=0, column=0, sticky='w', padx=475, pady=0)
 
         # =============================================================
         # FONDO PANTALLA PRINCIPAL
         # =============================================================
-        self.img_p_pr = Label(self.root, image=imagenes['fondo'], compound=TOP)
-        self.img_p_pr.image = imagenes['fondo']
-        self.img_p_pr.grid(row=1, column=0, sticky='NW', padx=0, pady=0)
+        self.fondo = Label(self.root, image=imagenes['fondo'], bg="#003366", fg='White',
+                           font=("Cooper Black", 12), compound="left")
+        self.fondo.image = imagenes['fondo']
+        self.fondo.place(x=0, y=0)
+
+        self.txt = "SYSTEM CONTROL IFAP (INICIO)"
+        self.count = 0
+        self.text = ''
+        self.color = ["#4f4e4d", "#f29844", "red2"]
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
+                             fg='black', bd=5, relief=FLAT)
+        self.heading.place(x=0, y=0, width=1367)
+
+        self.slider()
+        self.heading_color()
 
         # =============================================================
         # CREACIÓN DE LA BARRA DE MENÚ
@@ -86,75 +101,125 @@ class Principal_S:
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
         self.menus.add_cascade(label='INFO', menu=self.Column5)
-        self.Column5.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
-        self.Column5.add_separator()
         self.Column5.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
         self.Column5.add_separator()
         self.root.config(menu=self.menus)
-
-        data = datetime.now()
-        fomato_f = " %A %d/%B/%Y   %H:%M:%S %p "
-        self.footer = Label(self.root, text='  FECHA Y HORA DE INGRESO: ', font=("Cooper Black", 10), bg='Honeydew2',
-                            relief=RIDGE)
-        self.footer.place(x=0, y=703)
-        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='Honeydew2',
-                              relief=RIDGE)
-        self.footer_1.place(x=212, y=704)
 
         self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
                               fg='white')
         self.footer_4.place(x=0, y=725)
 
-    def logout(self):
-        self.root.destroy()
+        # =============================================================
+        # CREACIÓN DE PIÉ DE PANTALLA
+        # =============================================================
+        data = datetime.now()
+        fomato_f = " %A %d/%B/%Y"
 
-        from Login_Window import Login
-        st_root = Tk()
-        Login(st_root)
-        st_root.mainloop()
+        self.footer = Label(self.root, text='  FECHA Y HORA: ', font=("Cooper Black", 9), bg='black',
+                            fg='white')
+        self.footer.place(x=930, y=725)
+        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='black',
+                              fg='white')
+        self.footer_1.place(x=1040, y=727)
+
+        self.clock = Label(self.root)
+        self.clock['text'] = '00:00:00'
+        self.clock['font'] = 'Tahoma 9 bold'
+        self.clock['bg'] = 'black'
+        self.clock['fg'] = 'white'
+        self.clock.place(x=1275, y=725)
+        self.tic()
+        self.tac()
+
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
+
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
+
+    def slider(self):
+        """creates slides for heading by taking the text,
+        and that text are called after every 100 ms"""
+        if self.count >= len(self.txt):
+            self.count = -1
+            self.text = ''
+            self.heading.config(text=self.text)
+
+        else:
+            self.text = self.text + self.txt[self.count]
+            self.heading.config(text=self.text)
+        self.count += 1
+
+        self.heading.after(100, self.slider)
+
+    def heading_color(self):
+        """
+            configures heading label
+            :return: every 50 ms returned new random color.
+        """
+        fg = random.choice(self.color)
+        self.heading.config(fg=fg)
+        self.heading.after(50, self.heading_color)
+
+    def logout(self):
+        root = Toplevel()
+        Frontend.login_form.Login(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def principal_btn(self):
+        root = Toplevel()
+        Frontend.Secretary.Principal_Window_S.Principal_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def student_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Secretary.Student_Window_S.Student_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Secretaria.Student_Window_S import Student_S
-        st_root = Tk()
-        Student_S(st_root)
-        st_root.mainloop()
+    def matricula_btn(self):
+        root = Toplevel()
+        Frontend.Secretary.Matricula_Window_S.Matricula_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def assesor_btn(self):
-        self.root.destroy()
-
-        from Secretaria.Assesor_Window_S import Assesor_S
-        st_root = Tk()
-        Assesor_S(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Secretary.Assesor_Window_S.Assesor_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def courses_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Secretary.Course_Window_S.Course_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Secretaria.Course_Window_S import Course_S
-        st_root = Tk()
-        Course_S(st_root)
-        st_root.mainloop()
+    def paralelos_btn(self):
+        root = Toplevel()
+        Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def implements_btn(self):
+        root = Toplevel()
+        Frontend.Secretary.Implements_Window_S.Implement_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def pass_btn(self):
-        self.root.destroy()
-
-        from Secretaria.Password_Window_S import Password_S
-        st_root = Tk()
-        Password_S(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Secretary.Password_Window_S.Password_S(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def salir_principal(self):
         self.sa = messagebox.askyesno('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')
         if self.sa:
             exit()
-
-    # =============================================================
-    # FUNCIÓN CAJA DE INFORMACIÓN DEL INSTITUTO(INFO)
-    # =============================================================
-    def caja_info_ifap(self):
-        self.men1 = messagebox.showinfo('SIST_CONTROL (IFAP®)', 'INSTITUTO DE FORMACIÓN ACADEMICA PROEZAS(IFAP®)')
 
     # =============================================================
     # FUNCIÓN CAJA DE INFORMACIÓN DEL SISTEMA(INFO)
@@ -163,13 +228,19 @@ class Principal_S:
         self.men2 = messagebox.showinfo('SIST_CONTROL (IFAP®)',
                                         'SIST_CONTROL (IFAP®) v2.0\n'
                                         'El uso de este software queda sujeto a los términos y condiciones del '
-                                        'contrato "BJM DESING®-CLIENTE".    \n'
+                                        'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
                                         'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
 
 
-if __name__ == '__main__':
-    root = Tk()
-    application = Principal_S(root)
+def root():
+    root = tk.ThemedTk()
+    root.get_themes()
+    root.set_theme("arc")
+    Principal_S(root)
     root.mainloop()
+
+
+if __name__ == '__main__':
+    root()

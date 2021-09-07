@@ -11,17 +11,16 @@ from Backend.conexion import conn
 
 
 class Password:
-
     def __init__(self, root):
-
         self.root = root
         self.root.title("SYST_CONTROL--›Usuarios")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
+        self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
         self.root.configure(bg='#a27114')
 
         imagenes = {
-            'nuevo': PhotoImage(file='./recursos/icon_aceptar.png')
+            'nuevo': PhotoImage(file='recursos\\icon_aceptar.png')
         }
 
         # =============================================================
@@ -282,7 +281,7 @@ class Password:
     def principal_btn(self):
         self.root.destroy()
 
-        from Frontend.Principal_Window_A import Principal
+        from Frontend.Admin.Principal_Window_A import Principal
         st_root = Tk()
         Principal(st_root)
         st_root.mainloop()
@@ -290,7 +289,7 @@ class Password:
     def student_btn(self):
         self.root.destroy()
 
-        from Frontend.Student_Window_A import Student
+        from Frontend.Admin.Student_Window_A import Student
         st_root = Tk()
         Student(st_root)
         st_root.mainloop()
@@ -298,7 +297,7 @@ class Password:
     def assesor_btn(self):
         self.root.destroy()
 
-        from Frontend.Assesor_Window_A import Assesor
+        from Frontend.Admin.Assesor_Window_A import Assesor
         st_root = Tk()
         Assesor(st_root)
         st_root.mainloop()
@@ -306,7 +305,7 @@ class Password:
     def courses_btn(self):
         self.root.destroy()
 
-        from Frontend.Course_Window_A import Course
+        from Frontend.Admin.Course_Window_A import Course
         st_root = Tk()
         Course(st_root)
         st_root.mainloop()
@@ -314,7 +313,7 @@ class Password:
     def facturation_btn(self):
         self.root.destroy()
 
-        from Frontend.Facturation_Window_A import Ventana_Principal
+        from Frontend.Admin.Facturation_Window_A import Ventana_Principal
         st_root = Tk()
         Ventana_Principal(st_root)
         st_root.mainloop()

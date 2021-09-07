@@ -1,7 +1,7 @@
 """from funciones_auxiliares import conexion_consulta"""
 from tkinter import messagebox
 
-from reportes import ReciboFactura
+from Frontend.Admin.reportes import ReciboFactura
 
 import Backend.connection
 import Model_class.facturas_registration

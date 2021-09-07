@@ -11,22 +11,22 @@ import Model_class.facturas_registration
 
 from tkinter import messagebox
 from ttkthemes import themed_tk as tk
-from modelos import Producto, ProductoFacturar, Factura
-from reportes import ReciboFactura
+from Frontend.Admin.modelos import ProductoFacturar, Factura
+from Frontend.Admin.reportes import ReciboFactura
 
 import Model_class.students_registration
 
-import Frontend.Principal_Window_A
+import Frontend.Admin.Principal_Window_A
 import Frontend.login_form
-import Frontend.Student_Window_A
-import Frontend.Matricula_Window_A
-import Frontend.Assesor_Window_A
-import Frontend.Course_Window_A
-import Frontend.Paralelo_Window_A
-import Frontend.Implements_Window_A
-import Frontend.Report_Window_A
-import Frontend.Password_Window_A
-import Frontend.Users_Window_A
+import Frontend.Admin.Student_Window_A
+import Frontend.Admin.Matricula_Window_A
+import Frontend.Admin.Assesor_Window_A
+import Frontend.Admin.Course_Window_A
+import Frontend.Admin.Paralelo_Window_A
+import Frontend.Admin.Implements_Window_A
+import Frontend.Admin.Report_Window_A
+import Frontend.Admin.Password_Window_A
+import Frontend.Admin.Users_Window_A
 
 
 class Ventana_Principal:
@@ -40,18 +40,18 @@ class Ventana_Principal:
         self.root.title("SYST_CONTROL--›FACTURACIÓN")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
-        self.root.iconbitmap('./recursos/ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
         self.root.configure(bg='#a27114')
 
         self.imagenes = {
-            'nuevo': PhotoImage(file='./recursos/icon_add.png'),
-            'editar': PhotoImage(file='./recursos/icon_update.png'),
-            'reportes': PhotoImage(file='./recursos/icon_up.png'),
-            'new': PhotoImage(file='./recursos/icon_new_ind.png'),
-            'buscar': PhotoImage(file='./recursos/icon_buscar.png'),
-            'todo': PhotoImage(file='./recursos/icon_ver_todo.png'),
-            'facturar': PhotoImage(file='./recursos/icon_aceptar.png'),
-            'actualizar': PhotoImage(file='./recursos/icon_upd.png')
+            'nuevo': PhotoImage(file='recursos\\icon_add.png'),
+            'editar': PhotoImage(file='recursos\\icon_update.png'),
+            'reportes': PhotoImage(file='recursos\\icon_up.png'),
+            'new': PhotoImage(file='recursos\\icon_new_ind.png'),
+            'buscar': PhotoImage(file='recursos\\icon_buscar.png'),
+            'todo': PhotoImage(file='recursos\\icon_ver_todo.png'),
+            'facturar': PhotoImage(file='recursos\\icon_aceptar.png'),
+            'actualizar': PhotoImage(file='recursos\\icon_upd.png')
         }
 
         # =============================================================
@@ -703,67 +703,67 @@ class Ventana_Principal:
 
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Principal_Window_A.Principal(root)
+        Frontend.Admin.Principal_Window_A.Principal(root)
         self.root.withdraw()
         root.deiconify()
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Student_Window_A.Student(root)
+        Frontend.Admin.Student_Window_A.Student(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Matricula_Window_A.Matricula(root)
+        Frontend.Admin.Matricula_Window_A.Matricula(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Assesor_Window_A.Assesor(root)
+        Frontend.Admin.Assesor_Window_A.Assesor(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Course_Window_A.Course(root)
+        Frontend.Admin.Course_Window_A.Course(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Paralelo_Window_A.Paralelo(root)
+        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Implements_Window_A.Implement(root)
+        Frontend.Admin.Implements_Window_A.Implement(root)
         self.root.withdraw()
         root.deiconify()
 
     def facturation_btn(self):
         root = Toplevel()
-        Frontend.Facturation_Window_A.Ventana_Principal(root)
+        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
         self.root.withdraw()
         root.deiconify()
 
     def report_btn(self):
         root = Toplevel()
-        Frontend.Report_Window_A.Reports(root)
+        Frontend.Admin.Report_Window_A.Reports(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Password_Window_A.Password(root)
+        Frontend.Admin.Password_Window_A.Password(root)
         self.root.withdraw()
         root.deiconify()
 
     def users_btn(self):
         root = Toplevel()
-        Frontend.Users_Window_A.Users(root)
+        Frontend.Admin.Users_Window_A.Users(root)
         self.root.withdraw()
         root.deiconify()
 

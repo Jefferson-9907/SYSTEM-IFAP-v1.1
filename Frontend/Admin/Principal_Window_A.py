@@ -7,16 +7,16 @@ import random
 from tkinter import messagebox
 
 import Frontend.login_form
-import Frontend.Student_Window_A
-import Frontend.Matricula_Window_A
-import Frontend.Assesor_Window_A
-import Frontend.Course_Window_A
-import Frontend.Paralelo_Window_A
-import Frontend.Implements_Window_A
-import Frontend.Facturation_Window_A
-import Frontend.Report_Window_A
-import Frontend.Password_Window_A
-import Frontend.Users_Window_A
+import Frontend.Admin.Student_Window_A
+import Frontend.Admin.Matricula_Window_A
+import Frontend.Admin.Assesor_Window_A
+import Frontend.Admin.Course_Window_A
+import Frontend.Admin.Paralelo_Window_A
+import Frontend.Admin.Implements_Window_A
+import Frontend.Admin.Facturation_Window_A
+import Frontend.Admin.Report_Window_A
+import Frontend.Admin.Password_Window_A
+import Frontend.Admin.Users_Window_A
 
 
 class Principal:
@@ -191,61 +191,61 @@ class Principal:
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Student_Window_A.Student(root)
+        Frontend.Admin.Student_Window_A.Student(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Matricula_Window_A.Matricula(root)
+        Frontend.Admin.Matricula_Window_A.Matricula(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Assesor_Window_A.Assesor(root)
+        Frontend.Admin.Assesor_Window_A.Assesor(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Course_Window_A.Course(root)
+        Frontend.Admin.Course_Window_A.Course(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Paralelo_Window_A.Paralelo(root)
+        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Implements_Window_A.Implement(root)
+        Frontend.Admin.Implements_Window_A.Implement(root)
         self.root.withdraw()
         root.deiconify()
 
     def facturation_btn(self):
         root = Toplevel()
-        Frontend.Facturation_Window_A.Ventana_Principal(root)
+        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
         self.root.withdraw()
         root.deiconify()
 
     def report_btn(self):
         root = Toplevel()
-        Frontend.Report_Window_A.Reports(root)
+        Frontend.Admin.Report_Window_A.Reports(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Password_Window_A.Password(root)
+        Frontend.Admin.Password_Window_A.Password(root)
         self.root.withdraw()
         root.deiconify()
 
     def users_btn(self):
         root = Toplevel()
-        Frontend.Users_Window_A.Users(root)
+        Frontend.Admin.Users_Window_A.Users(root)
         self.root.withdraw()
         root.deiconify()
 

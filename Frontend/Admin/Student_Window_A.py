@@ -8,17 +8,17 @@ import random
 import Backend.connection
 import Model_class.students_registration
 
-import Frontend.Principal_Window_A
+import Frontend.Admin.Principal_Window_A
 import Frontend.login_form
-import Frontend.Matricula_Window_A
-import Frontend.Assesor_Window_A
-import Frontend.Course_Window_A
-import Frontend.Paralelo_Window_A
-import Frontend.Implements_Window_A
-import Frontend.Facturation_Window_A
-import Frontend.Report_Window_A
-import Frontend.Password_Window_A
-import Frontend.Users_Window_A
+import Frontend.Admin.Matricula_Window_A
+import Frontend.Admin.Assesor_Window_A
+import Frontend.Admin.Course_Window_A
+import Frontend.Admin.Paralelo_Window_A
+import Frontend.Admin.Implements_Window_A
+import Frontend.Admin.Facturation_Window_A
+import Frontend.Admin.Report_Window_A
+import Frontend.Admin.Password_Window_A
+import Frontend.Admin.Users_Window_A
 
 
 class Student:
@@ -33,7 +33,6 @@ class Student:
     get_id = []
 
     def __init__(self, root):
-
         self.root = root
         self.root.title("SYST_CONTROL--›ALUMNOS")
         self.root.attributes('-fullscreen', True)
@@ -49,7 +48,7 @@ class Student:
             'limpiar': PhotoImage(file='recursos\\icon_clean.png'),
             'buscar': PhotoImage(file='recursos\\icon_buscar.png'),
             'todo': PhotoImage(file='recursos\\icon_ver_todo.png'),
-            'actualizar': PhotoImage(file='./recursos/icon_upd.png')
+            'actualizar': PhotoImage(file='recursos\\icon_upd.png')
         }
 
         # =============================================================
@@ -154,18 +153,27 @@ class Student:
         self.Column8.add_separator()
         self.root.config(menu=self.menus)
 
+        # =============================================================
+        # CREACIÓN DE PIÉ DE PANTALLA
+        # =============================================================
         data = datetime.now()
-        fomato_f = " %A %d/%B/%Y   %H:%M:%S %p "
-        self.footer = Label(self.root, text='  FECHA Y HORA DE INGRESO: ', font=("Cooper Black", 10), bg='Honeydew2',
-                            relief=RIDGE)
-        self.footer.place(x=0, y=703)
-        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='Honeydew2',
-                              relief=RIDGE)
-        self.footer_1.place(x=212, y=704)
+        fomato_f = " %A %d/%B/%Y"
 
-        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+        self.footer = Label(self.root, text='  FECHA Y HORA: ', font=("Cooper Black", 9), bg='black',
+                            fg='white')
+        self.footer.place(x=930, y=725)
+        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='black',
                               fg='white')
-        self.footer_4.place(x=0, y=725)
+        self.footer_1.place(x=1040, y=727)
+
+        self.clock = Label(self.root)
+        self.clock['text'] = '00:00:00'
+        self.clock['font'] = 'Tahoma 9 bold'
+        self.clock['bg'] = 'black'
+        self.clock['fg'] = 'white'
+        self.clock.place(x=1275, y=725)
+        self.tic()
+        self.tac()
 
         # Manage Frame
         Manage_Frame = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
@@ -700,67 +708,67 @@ class Student:
 
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Principal_Window_A.Principal(root)
+        Frontend.Admin.Principal_Window_A.Principal(root)
         self.root.withdraw()
         root.deiconify()
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Student_Window_A.Student(root)
+        Frontend.Admin.Student_Window_A.Student(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Matricula_Window_A.Matricula(root)
+        Frontend.Admin.Matricula_Window_A.Matricula(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Assesor_Window_A.Assesor(root)
+        Frontend.Admin.Assesor_Window_A.Assesor(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Course_Window_A.Course(root)
+        Frontend.Admin.Course_Window_A.Course(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Paralelo_Window_A.Paralelo(root)
+        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Implements_Window_A.Implement(root)
+        Frontend.Admin.Implements_Window_A.Implement(root)
         self.root.withdraw()
         root.deiconify()
 
     def facturation_btn(self):
         root = Toplevel()
-        Frontend.Facturation_Window_A.Ventana_Principal(root)
+        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
         self.root.withdraw()
         root.deiconify()
 
     def report_btn(self):
         root = Toplevel()
-        Frontend.Report_Window_A.Reports(root)
+        Frontend.Admin.Report_Window_A.Reports(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Password_Window_A.Password(root)
+        Frontend.Admin.Password_Window_A.Password(root)
         self.root.withdraw()
         root.deiconify()
 
     def users_btn(self):
         root = Toplevel()
-        Frontend.Users_Window_A.Users(root)
+        Frontend.Admin.Users_Window_A.Users(root)
         self.root.withdraw()
         root.deiconify()
 

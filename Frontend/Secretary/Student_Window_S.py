@@ -1,5 +1,6 @@
 # Import Modules
 from _datetime import datetime
+from time import strftime
 from tkinter import *
 from tkinter import messagebox, ttk
 from ttkthemes import themed_tk as tk
@@ -87,9 +88,6 @@ class Student_S:
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
-        self.cuaderno = ttk.Notebook(self.root, width=1000, height=625)
-        self.cuaderno.grid(row=1, column=0, sticky='nw', padx=10, pady=5)
-
         # =============================================================
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
@@ -131,6 +129,10 @@ class Student_S:
         # =============================================================
         # CREACIÓN DE PIÉ DE PANTALLA
         # =============================================================
+        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+                              fg='white')
+        self.footer_4.place(x=0, y=725)
+
         data = datetime.now()
         fomato_f = " %A %d/%B/%Y"
 
@@ -346,6 +348,13 @@ class Student_S:
         self.Table.bind('<ButtonRelease 1>', self.get_fields)
 
         self.show_data()
+
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
+
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
 
     def slider(self):
         """creates slides for heading by taking the text,
@@ -683,67 +692,49 @@ class Student_S:
 
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Admin.Principal_Window_A.Principal(root)
+        Frontend.Secretary.Principal_Window_S.Principal_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Admin.Student_Window_A.Student(root)
+        Frontend.Secretary.Student_Window_S.Student_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Admin.Matricula_Window_A.Matricula(root)
+        Frontend.Secretary.Matricula_Window_S.Matricula_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Admin.Assesor_Window_A.Assesor(root)
+        Frontend.Secretary.Assesor_Window_S.Assesor_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Admin.Course_Window_A.Course(root)
+        Frontend.Secretary.Course_Window_S.Course_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
+        Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def facturation_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def report_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Report_Window_A.Reports(root)
+        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Admin.Password_Window_A.Password(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def users_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Users_Window_A.Users(root)
+        Frontend.Secretary.Password_Window_S.Password_S(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -764,12 +755,14 @@ class Student_S:
                                         'este software para fines de distribución\n'
                                         'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
 
+
 def root():
     root = tk.ThemedTk()
     root.get_themes()
     root.set_theme("arc")
     Student_S(root)
     root.mainloop()
+
 
 if __name__ == '__main__':
     root()

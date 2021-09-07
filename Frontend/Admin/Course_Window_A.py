@@ -24,7 +24,6 @@ import Frontend.Admin.Users_Window_A
 
 
 class Course:
-
     def __init__(self, root):
         self.root = root
         self.root.title("SYST_CONTROL--›Cursos")

@@ -120,41 +120,32 @@ class Implement_S:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ FACTURACIÓN
-        # =============================================================
-        self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
-        self.Column6 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
-        # CREACIÓN DEL DE MENÚ REPORTES
-        # =============================================================
-        self.menus.add_cascade(label='REPORTES', menu=self.Column6)
-        self.Column6.add_command(label='Generar Reportes', command=self.report_btn)
-        self.Column7 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
         # CREACIÓN DEL DE MENÚ AYUDA
         # =============================================================
-        self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
-        self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
-        self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
-        self.Column7.add_separator()
-        self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
-        self.Column7.add_separator()
-        self.Column8 = Menu(self.menus, tearoff=0)
+        self.menus.add_cascade(label='USUARIOS', menu=self.Column5)
+        self.Column5.add_command(label='Cambiar Usuario', command=self.logout)
+        self.Column5.add_command(label='Cambiar Contraseña', command=self.pass_btn)
+        self.Column5.add_separator()
+        self.Column5.add_command(label='Cerrar Sesión', command=self.salir_principal)
+        self.Column5.add_separator()
+        self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
-        self.menus.add_cascade(label='INFO', menu=self.Column8)
-        self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
-        self.Column8.add_separator()
+        self.menus.add_cascade(label='INFO', menu=self.Column6)
+        self.Column6.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
+        self.Column6.add_separator()
         self.root.config(menu=self.menus)
 
+        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+                              fg='white')
+        self.footer_4.place(x=0, y=725)
+
+        # =============================================================
+        # CREACIÓN DE PIÉ DE PANTALLA
+        # =============================================================
         data = datetime.now()
         fomato_f = " %A %d/%B/%Y"
 
@@ -569,67 +560,49 @@ class Implement_S:
 
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Admin.Principal_Window_A.Principal(root)
+        Frontend.Secretary.Principal_Window_S.Principal_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def student_btn(self):
         root = Toplevel()
-        Frontend.Admin.Student_Window_A.Student(root)
+        Frontend.Secretary.Student_Window_S.Student_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def matricula_btn(self):
         root = Toplevel()
-        Frontend.Admin.Matricula_Window_A.Matricula(root)
+        Frontend.Secretary.Matricula_Window_S.Matricula_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def assesor_btn(self):
         root = Toplevel()
-        Frontend.Admin.Assesor_Window_A.Assesor(root)
+        Frontend.Secretary.Assesor_Window_S.Assesor_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def courses_btn(self):
         root = Toplevel()
-        Frontend.Admin.Course_Window_A.Course(root)
+        Frontend.Secretary.Course_Window_S.Course_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def paralelos_btn(self):
         root = Toplevel()
-        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
+        Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def implements_btn(self):
         root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def facturation_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def report_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Report_Window_A.Reports(root)
+        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Admin.Password_Window_A.Password(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def users_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Users_Window_A.Users(root)
+        Frontend.Secretary.Password_Window_S.Password_S(root)
         self.root.withdraw()
         root.deiconify()
 

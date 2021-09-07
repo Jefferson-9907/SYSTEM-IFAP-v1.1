@@ -3,6 +3,7 @@ from _datetime import datetime
 from time import strftime
 from tkinter import *
 from tkinter import messagebox, ttk
+from ttkthemes import themed_tk as tk
 import random
 
 import Backend.connection
@@ -22,9 +23,7 @@ import Frontend.Admin.Users_Window_A
 
 
 class Matricula:
-
     def __init__(self, root):
-
         self.root = root
         self.root.title("SYST_CONTROL--›MATRICULACIÓN")
         self.root.attributes('-fullscreen', True)
@@ -772,7 +771,13 @@ class Matricula:
                                         'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
 
 
-if __name__ == '__main__':
-    root = Tk()
-    application = Matricula(root)
+def root():
+    root = tk.ThemedTk()
+    root.get_themes()
+    root.set_theme("arc")
+    Matricula(root)
     root.mainloop()
+
+
+if __name__ == '__main__':
+    root()

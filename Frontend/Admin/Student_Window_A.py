@@ -1,5 +1,6 @@
 # Import Modules
 from _datetime import datetime
+from time import strftime
 from tkinter import *
 from tkinter import messagebox, ttk
 from ttkthemes import themed_tk as tk
@@ -371,6 +372,13 @@ class Student:
         self.Table.bind('<ButtonRelease 1>', self.get_fields)
 
         self.show_data()
+
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
+
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
 
     def slider(self):
         """creates slides for heading by taking the text,

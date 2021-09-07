@@ -110,40 +110,28 @@ class Paralelo_S:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ FACTURACIÓN
-        # =============================================================
-        self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
-        self.Column6 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
-        # CREACIÓN DEL DE MENÚ REPORTES
-        # =============================================================
-        self.menus.add_cascade(label='REPORTES', menu=self.Column6)
-        self.Column6.add_command(label='Generar Reportes', command=self.report_btn)
-        self.Column7 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
         # CREACIÓN DEL DE MENÚ USUARIOS
         # =============================================================
-        self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
-        self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
-        self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
-        self.Column7.add_separator()
-        self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
-        self.Column7.add_separator()
-        self.Column8 = Menu(self.menus, tearoff=0)
+        self.menus.add_cascade(label='USUARIOS', menu=self.Column5)
+        self.Column5.add_command(label='Cambiar Usuario', command=self.logout)
+        self.Column5.add_command(label='Cambiar Contraseña', command=self.pass_btn)
+        self.Column5.add_separator()
+        self.Column5.add_command(label='Cerrar Sesión', command=self.salir_principal)
+        self.Column5.add_separator()
+        self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
-        self.menus.add_cascade(label='INFO', menu=self.Column8)
-        self.Column8.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
-        self.Column8.add_separator()
+        self.menus.add_cascade(label='INFO', menu=self.Column6)
+        self.Column6.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
+        self.Column6.add_separator()
         self.root.config(menu=self.menus)
+
+        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+                              fg='white')
+        self.footer_4.place(x=0, y=725)
 
         data = datetime.now()
         fomato_f = " %A %d/%B/%Y"

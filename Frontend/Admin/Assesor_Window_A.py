@@ -5,6 +5,7 @@ from time import strftime
 from tkinter import *
 from tkinter import messagebox, ttk
 from ttkthemes import themed_tk as tk
+
 import Backend.connection
 import Model_class.assesor_registration
 
@@ -22,9 +23,7 @@ import Frontend.Admin.Users_Window_A
 
 
 class Assesor:
-
     def __init__(self, root):
-
         self.root = root
         self.root.title("SYST_CONTROL--›Asesores")
         self.root.attributes('-fullscreen', True)

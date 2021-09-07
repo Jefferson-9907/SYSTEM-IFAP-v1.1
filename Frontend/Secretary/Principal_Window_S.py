@@ -65,7 +65,8 @@ class Principal_S:
         # AÑADIENDO OPCIONES AL MENÚ ALUMNO
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column1)
-        self.Column1.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column1.add_command(label='Alumnos', command=self.student_btn)
+        self.Column1.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column2 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -73,7 +74,7 @@ class Principal_S:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column2)
-        self.Column2.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column2.add_command(label='Asesores', command=self.assesor_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -81,7 +82,9 @@ class Principal_S:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column3)
-        self.Column3.add_command(label='Menú Cursos', command=self.courses_btn)
+        self.Column3.add_command(label='Cursos', command=self.courses_btn)
+        self.Column3.add_command(label='Paralelos', command=self.paralelos_btn)
+        self.Column3.add_command(label='Implementos', command=self.implements_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 

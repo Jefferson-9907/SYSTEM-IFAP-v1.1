@@ -9,6 +9,18 @@ import Backend.connection
 import Model_class.users_registration
 from Backend.conexion import conn
 
+import Frontend.Admin.Principal_Window_A
+import Frontend.login_form
+import Frontend.Admin.Student_Window_A
+import Frontend.Admin.Matricula_Window_A
+import Frontend.Admin.Assesor_Window_A
+import Frontend.Admin.Course_Window_A
+import Frontend.Admin.Paralelo_Window_A
+import Frontend.Admin.Implements_Window_A
+import Frontend.Admin.Facturation_Window_A
+import Frontend.Admin.Report_Window_A
+import Frontend.Admin.Users_Window_A
+
 
 class Password:
     def __init__(self, root):
@@ -271,52 +283,76 @@ class Password:
         self.e_us.focus()
 
     def logout(self):
-        self.root.destroy()
-
-        from Frontend.login_form import Login
-        st_root = Tk()
-        Login(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.login_form.Login(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def principal_btn(self):
-        self.root.destroy()
-
-        from Frontend.Admin.Principal_Window_A import Principal
-        st_root = Tk()
-        Principal(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Admin.Principal_Window_A.Principal(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def student_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Admin.Student_Window_A.Student(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Admin.Student_Window_A import Student
-        st_root = Tk()
-        Student(st_root)
-        st_root.mainloop()
+    def matricula_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Matricula_Window_A.Matricula(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def assesor_btn(self):
-        self.root.destroy()
-
-        from Frontend.Admin.Assesor_Window_A import Assesor
-        st_root = Tk()
-        Assesor(st_root)
-        st_root.mainloop()
+        root = Toplevel()
+        Frontend.Admin.Assesor_Window_A.Assesor(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def courses_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Admin.Course_Window_A.Course(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Admin.Course_Window_A import Course
-        st_root = Tk()
-        Course(st_root)
-        st_root.mainloop()
+    def paralelos_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Paralelo_Window_A.Paralelo(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def implements_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Implements_Window_A.Implement(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def facturation_btn(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.Admin.Facturation_Window_A import Ventana_Principal
-        st_root = Tk()
-        Ventana_Principal(st_root)
-        st_root.mainloop()
+    def report_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Report_Window_A.Reports(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def pass_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Password_Window_A.Password(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def users_btn(self):
+        root = Toplevel()
+        Frontend.Admin.Users_Window_A.Users(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def salir_principal(self):
         self.sa = messagebox.askyesno('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')

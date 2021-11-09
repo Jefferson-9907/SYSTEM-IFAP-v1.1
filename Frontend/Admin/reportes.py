@@ -4,21 +4,23 @@ from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib.colors import black
 
+import Backend.connection
+import os
+
 
 class ReciboFactura:
     """Objeto para crear un recibo asociado a una factura"""
 
     def __init__(self):
-        """Inicializa el titulo de la factura
-        fecha = datetime.now()
+        """
+            Inicializa el titulo de la factura
+        """
 
-        data = datetime.now()
-        fomato_f = " %A %d-%B-%Y %H: %M: %S %p "
-        titulo = str(data.strftime(fomato_f))"""
+        self.titulo = 'Factura.pdf'
+        self.factura = canvas.Canvas(self.titulo, pagesize=A4)
 
-        titulo = 'Factura-PRUEBA.pdf'
-
-        self.factura = canvas.Canvas(titulo, pagesize=A4)
+        # ======================Backend connection=============
+        self.db_connection = Backend.connection.DatabaseConnection()
 
     def crear_esqueleto(self):
         _, h = A4
@@ -48,12 +50,11 @@ class ReciboFactura:
         data = [[' Cod.', '                                           Implemento', 'Cant.', 'Precio', 'Subtotal'],
                 ]
         for productos in lista_productos:
-            lista = []
-            lista.append(str(productos.id))
-            lista.append(str(productos.descripcion))
-            lista.append(str(productos.cantidad))
-            lista.append(str(productos.precio))
-            lista.append(str(productos.sub_total))
+            lista = [str(productos.id),
+                     str(productos.descripcion),
+                     str(productos.cantidad),
+                     str(productos.precio),
+                     str(productos.sub_total)]
             data.append(lista)
             centinela = centinela + 20
 
@@ -94,6 +95,7 @@ class ReciboFactura:
         self.factura.drawString(110, h - 150, str(object.n_c_al))
         self.factura.drawString(110, h - 165, str(object.dir_al))
         self.factura.drawString(110, h - 180, str(object.fecha_creacion))
+        self.factura.drawString(175, h - 180, str(object.hora))
 
         self.factura.drawString(540, punto - 85, str(object.total))
         self.factura.drawString(540, punto - 105, str(object.pago))
@@ -104,14 +106,16 @@ class ReciboFactura:
         self.factura.drawString(110, h - 605, str(object.n_c_al))
         self.factura.drawString(110, h - 620, str(object.dir_al))
         self.factura.drawString(110, h - 635, str(object.fecha_creacion))
+        self.factura.drawString(175, h - 635, str(object.hora))
 
-        self.factura.drawString(540, punto - 535, str(object.total))
-        self.factura.drawString(540, punto - 555, str(object.pago))
-        self.factura.drawString(540, punto - 575, str(object.cambio))
+        self.factura.drawString(540, punto - 540, str(object.total))
+        self.factura.drawString(540, punto - 560, str(object.pago))
+        self.factura.drawString(540, punto - 580, str(object.cambio))
 
     def save(self):
         self.factura.showPage()
         self.factura.save()
+        os.system(self.titulo)
 
     def __del__(self):
         pass

@@ -144,6 +144,10 @@ class Assesor:
         self.Column8.add_separator()
         self.root.config(menu=self.menus)
 
+        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+                              fg='white')
+        self.footer_4.place(x=0, y=725)
+
         data = datetime.now()
         fomato_f = " %A %d/%B/%Y"
 

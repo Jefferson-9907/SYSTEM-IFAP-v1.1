@@ -71,7 +71,8 @@ class Login:
 
         self.username_entry = Entry(self.Manage_Frame_login, highlightthickness=0, relief=FLAT, bg="#D3D3D3",
                                     fg="#4f4e4d", font=("Cooper Black", 12))
-        self.username_entry.place(x=140, y=110, width=250)  # trebuchet ms
+        self.username_entry.place(x=140, y=110, width=250)
+        self.username_entry.focus()
 
         # ========================================================================
         # ===========================Contraseña===================================

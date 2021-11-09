@@ -60,15 +60,16 @@ class Matricula:
         # ======================Backend connection=============
         self.db_connection = Backend.connection.DatabaseConnection()
 
-        self.barra1 = Label(self.root)
-        self.barra1.config(bg='black', padx=681, pady=20)
-        self.barra1.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.barra2 = Label(self.root)
-        self.barra2.config(bg="#a27114", padx=681, pady=10)
-        self.barra2.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.texto1 = Label(self.root, text='SYSTEM CONTROL (MATRICULACIÓN)')
-        self.texto1.config(font=("Britannic", 20, "bold"), fg='black', bg="#a27114")
-        self.texto1.grid(row=0, column=0, sticky='w', padx=455, pady=0)
+        self.txt = "SYSTEM CONTROL IFAP (MATRICULACIÓN)"
+        self.count = 0
+        self.text = ''
+        self.color = ["#4f4e4d", "#f29844", "red2"]
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
+                             fg='black', bd=5, relief=FLAT)
+        self.heading.place(x=0, y=0, width=1367)
+
+        self.slider()
+        self.heading_color()
 
         # =============================================================
         # CREACIÓN DE LA BARRA DE MENÚ

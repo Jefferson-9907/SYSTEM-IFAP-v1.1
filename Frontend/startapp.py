@@ -2,7 +2,6 @@ from tkinter import *
 from ttkthemes import themed_tk as tk
 import Frontend.connect_database
 import os
-
 import Frontend.login_form
 
 

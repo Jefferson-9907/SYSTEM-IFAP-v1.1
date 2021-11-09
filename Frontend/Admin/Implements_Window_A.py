@@ -157,6 +157,10 @@ class Implement:
         self.Column8.add_separator()
         self.root.config(menu=self.menus)
 
+        self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
+                              fg='white')
+        self.footer_4.place(x=0, y=725)
+
         data = datetime.now()
         fomato_f = " %A %d/%B/%Y"
 
@@ -210,13 +214,13 @@ class Implement:
         self.l_id_impl.grid(column=0, row=1, padx=0, pady=5)
         self.e_id_impl = Entry(self.Manage_Frame_impl, textvariable=self.id_implemento, width='10')
         self.e_id_impl.grid(column=1, row=1, padx=0, pady=5, sticky="W")
-        self.e_id_impl.focus()
         self.id_implemento.set(self.id_list)
 
         self.l_descr = Label(self.Manage_Frame_impl, text='DESCRIPCIÓN', width='12',
                              font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_descr.grid(column=0, row=2, padx=0, pady=5)
         self.e_descr = Entry(self.Manage_Frame_impl, textvariable=self.descripcion, width='50')
+        self.e_descr.focus()
         self.e_descr.grid(column=1, row=2, padx=0, pady=5, sticky="W")
 
         self.l_cost_imple = Label(self.Manage_Frame_impl, text='COSTO', width='12',

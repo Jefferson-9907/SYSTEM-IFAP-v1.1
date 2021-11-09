@@ -7,7 +7,9 @@ from datetime import datetime
 
 import Backend.connection
 import Model_class.implement_registration
+
 import Model_class.facturas_registration
+import Model_class.detalle_facturas_registration
 
 from tkinter import messagebox
 from ttkthemes import themed_tk as tk
@@ -31,7 +33,7 @@ import Frontend.Admin.Users_Window_A
 
 class Ventana_Principal:
     """
-    Contiene todos los widgets necesario para la facturacion
+        Contiene todos los widgets necesario para la facturacion
     """
 
     def __init__(self, root):
@@ -241,10 +243,9 @@ class Ventana_Principal:
         self.lb_cod_factura = Label(self.label_facturacion, text='No. FACTURA', bg='#a27114', fg="White",
                                     font=("Copperplate Gothic Bold", 12, "bold"))
         self.lb_cod_factura.place(x=225, y=10)
-
         self.codigo_factura = StringVar()
 
-        """try:
+        try:
             obj_courses_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_courses_database.get_database())
 
@@ -257,11 +258,11 @@ class Ventana_Principal:
                 self.id_list.append(id_factura)
 
         except BaseException as msg:
-            print(msg)"""
+            print(msg)
 
         self.txt_cod_factura = Entry(self.label_facturacion, state='readonly', textvariable=self.codigo_factura,
                                      fg='Red', width=10, font=('Copperplate Gothic Bold', 14), relief=RIDGE)
-        self.codigo_factura.set("000000001")
+        self.codigo_factura.set(self.id_list)
         self.txt_cod_factura.place(x=375, y=10)
 
         self.search_field = StringVar()
@@ -571,32 +572,34 @@ class Ventana_Principal:
         self.cantidad = StringVar()
         self.sub_total = StringVar()
 
-        self.lb_cod_producto = Label(self.producto_factura, text='CÓD. IMPLEMENTO', font=("Britannic", 10, "bold"),
-                                     bg='#808080')
+        self.lb_cod_producto = Label(self.producto_factura, text='CÓD. IMPLEMENTO', font=('Copperplate Gothic Bold', 10),
+                                     bg='#808080', width=15)
 
         self.lb_cod_producto.place(x=10, y=10)
         self.tx_codigo = Entry(self.producto_factura, state='readonly', textvariable=self.codigo, width=10)
-        self.tx_codigo.place(x=150, y=10)
+        self.tx_codigo.place(x=160, y=10)
 
         self.codigo.set(producto_focus['text'])
         self.codigo.set(lista[0])
 
         self.lb_nb_producto = Label(self.producto_factura, text='DESCRIPCIÓN', font=('Copperplate Gothic Bold', 10),
-                                    bg='#808080')
+                                    bg='#808080', width=15)
         self.lb_nb_producto.place(x=10, y=40)
 
         self.txt_nb_producto = Entry(self.producto_factura, state='readonly', textvariable=self.descripcion, width=50)
-        self.txt_nb_producto.place(x=150, y=40)
+        self.txt_nb_producto.place(x=160, y=40)
         self.descripcion.set(lista[1])
 
-        self.lb_precio = Label(self.producto_factura, text='PRECIO', font=("Britannic", 10, "bold"), bg='#808080')
+        self.lb_precio = Label(self.producto_factura, text='PRECIO', font=('Copperplate Gothic Bold', 10), bg='#808080',
+                               width=15)
         self.lb_precio.place(x=10, y=70)
 
         self.txt_precio = Entry(self.producto_factura, state='readonly', textvariable=self.precio, width=10)
-        self.txt_precio.place(x=150, y=70)
+        self.txt_precio.place(x=160, y=70)
         self.precio.set(lista[2])
 
-        self.lb_cantidad = Label(self.producto_factura, text='CANTIDAD', font=("Britannic", 10, "bold"), bg='#808080')
+        self.lb_cantidad = Label(self.producto_factura, text='CANTIDAD', font=('Copperplate Gothic Bold', 10),
+                                 bg='#808080', width=15)
         self.lb_cantidad.place(x=10, y=100)
 
         self.cantidad.set('1')
@@ -604,16 +607,17 @@ class Ventana_Principal:
                                   validatecommand=(self.validatecommand, "%S"), width=10)
 
         self.txt_cantidad.bind('<Return>', self.mostrar_sub_total)
-        self.txt_cantidad.place(x=150, y=100)
+        self.txt_cantidad.place(x=160, y=100)
         self.txt_cantidad.focus()
 
-        self.lb_sub_total = Label(self.producto_factura, text='SUB-TOTAL', font=("Britannic", 10, "bold"), bg='#808080')
+        self.lb_sub_total = Label(self.producto_factura, text='SUB-TOTAL', font=('Copperplate Gothic Bold', 10),
+                                  bg='#808080', width=15)
         self.lb_sub_total.place(x=10, y=130)
 
         self.txt_sub_total = Entry(self.producto_factura, state='readonly', textvariable=self.sub_total, width=10)
-        self.txt_sub_total.place(x=150, y=130)
+        self.txt_sub_total.place(x=160, y=130)
 
-        self.btAdd = Button(self.producto_factura, text='AÑADIR A FACTURA', font=("Britannic", 10, "bold"),
+        self.btAdd = Button(self.producto_factura, text='AÑADIR A FACTURA', font=('Copperplate Gothic Bold', 10),
                             command=self.agregar_producto_factura)
         self.btAdd.place(x=175, y=160)
 
@@ -636,8 +640,8 @@ class Ventana_Principal:
 
     def validar_producto_existente_factura(self, nombre):
         """
-        Funcion que verifica si un producto esta añadido a la factura
-        Si el caso es verdadero la cantidad solo se actualiza
+            Funcion que verifica si un producto esta añadido a la factura
+            Si el caso es verdadero la cantidad solo se actualiza
         """
         lista_producto = self.detalle_factura.get_children()
 
@@ -658,9 +662,6 @@ class Ventana_Principal:
         """Guarda el registro de la factura"""
         if self.txt_pago != '':  # Si el pago no esta vacio
             factura = self.factura
-
-            for productos_factura in self.factura.lista_productos:
-                productos_factura.guardar()
 
             factura.id_factura = self.cod_factura
             id_al = self.name_e.get()
@@ -688,12 +689,42 @@ class Ventana_Principal:
             factura.guardar()
             factura.lista_productos.clear()
             self.listar_productos()
+            """self.guardar_fact()
+            self.guardar_det_fact()"""
         else:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "EL CAMPO: PAGO NO PUEDE ESTAR VACÍO!!!")
 
+    def guardar_fact(self):
+        self.fecha_creacion = self.factura.fecha_creacion
+        self.hora = self.factura.hora
 
+        try:
+            obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_course_database.get_database())
 
+            query = 'INSERT INTO facturas (id_factura, id_estudiante, fecha, hora) VALUES(?, ?, ?, ?)'
+            values = (self.cod_factura, self.n_c_al, self.fecha_creacion, self.hora)
+            self.db_connection.insert(query, values)
 
+        except BaseException as msg:
+            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA FACTURA {msg}")
+
+    def guardar_det_fact(self):
+        """self.id_implemento_g =
+        self.precio_g =
+        self.cantidad_g ="""
+
+        try:
+            obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_course_database.get_database())
+
+            query = 'INSERT INTO detalle_facturas (id_detalle_factura, id_factura, id_implemento, cantidad, ' \
+                    'total_factura) VALUES(?, ?, ?, ?, ?)'
+            values = (self.cod_factura, self.cod_factura, self.id_implemento_g, self.precio_g, self.cantidad_g)
+            self.db_connection.insert(query, values)
+
+        except BaseException as msg:
+            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")
 
     def logout(self):
         root = Toplevel()

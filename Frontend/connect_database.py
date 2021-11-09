@@ -217,10 +217,11 @@ class ConnectDatabase:
                                                 obj_connect_db.get_password())
                 messagebox.showinfo("ÉXITO!!!", "CONEXION AL SERVIDOR EXITOSA")
                 self.store_database()
+                self.create_tables()
 
             else:
                 messagebox.showerror("ERROR", "ES POSIBLE QUE LA BASE DE DATOS YA ESTÉ CONECTADA")
-                self.create_tables()
+                """self.create_tables()"""
 
         except BaseException as msg:
 
@@ -334,7 +335,7 @@ class ConnectDatabase:
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
                 'CREATE TABLE matriculas('
-                'id_matricula VARCHAR(100) NOT NULL,'
+                'id_matricula VARCHAR(20) NOT NULL,'
                 'estudiante VARCHAR(100) NOT NULL,'
                 'paralelo VARCHAR(50) NOT NULL,'
                 'asesor VARCHAR(50) NOT NULL,'
@@ -344,18 +345,17 @@ class ConnectDatabase:
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
                 'CREATE TABLE facturas('
-                'id_factura VARCHAR(100) NOT NULL,'
-                'id_estudiante VARCHAR(100) NOT NULL,'
+                'id_factura VARCHAR(20) NOT NULL,'
+                'id_estudiante VARCHAR(20) NOT NULL,'
                 'fecha VARCHAR(50) NOT NULL,'
                 'hora VARCHAR(50) NOT NULL,'
-                'PRIMARY KEY (id_factura),'
-                'FOREIGN KEY (id_estudiante) REFERENCES estudiantes (id_estudiante));')
+                'PRIMARY KEY (id_factura));')
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
                 'CREATE TABLE detalle_facturas('
-                'id_detalle_factura VARCHAR(100) NOT NULL,'
-                'id_factura VARCHAR(100) NOT NULL,'
+                'id_detalle_factura VARCHAR(20) NOT NULL,'
+                'id_factura VARCHAR(20) NOT NULL,'
                 'id_implemento INT NOT NULL,'
                 'cantidad VARCHAR(50) NOT NULL,'
                 'total_factura VARCHAR(50) NOT NULL,'
@@ -364,7 +364,7 @@ class ConnectDatabase:
                 'FOREIGN KEY (id_implemento) REFERENCES implementos (id_implemento));')
             self.db_connection.create(obj_create_database.get_database())
 
-            messagebox.showinfo("ÉXITO!!!", "TABLAS DE LA BASE DE DATOS CREADAS CO0RRECTAMENTE.")
+            messagebox.showinfo("ÉXITO!!!", "TABLAS DE LA BASE DE DATOS CREADAS CORRECTAMENTE.")
 
         except BaseException as msg:
             messagebox.showerror("ERROR!!!", f"FALLÓ AL CREAR LAS TABLAS EN LA BASE DE DATOS, {msg}")

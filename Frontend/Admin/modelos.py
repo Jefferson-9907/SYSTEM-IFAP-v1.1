@@ -1,11 +1,9 @@
 """from funciones_auxiliares import conexion_consulta"""
 from tkinter import messagebox
 
-from Frontend.Admin.reportes import ReciboFactura
-
-import Backend.connection
 import Model_class.facturas_registration
-import Model_class.detalle_facturas_registration
+from Frontend.Admin.reportes import ReciboFactura
+import Backend.connection
 
 
 class Producto:
@@ -63,18 +61,18 @@ class ProductoFacturar(Producto):
                 'sub-total': self.sub_total
                 }
 
-    def guardar(self):
+    """def guardar(self):
         try:
             obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_course_database.get_database())
 
             query = 'INSERT INTO detalle_facturas (id_detalle_factura, id_factura, id_implemento, cantidad, ' \
                     'total_factura) VALUES(?, ?, ?, ?, ?)'
-            values = (self.id_factura, self.id_implemento, self.precio, self.cantidad)
+            values = (self.id_factura, self.id_factura, self.id_implemento, self.precio, self.cantidad)
             self.db_connection.insert(query, values)
 
         except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")
+            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")"""
 
 
 class Factura(ReciboFactura):
@@ -83,7 +81,7 @@ class Factura(ReciboFactura):
         super(Factura, self).__init__(*args, **kwargs)
 
         self.id_factura = ''
-        self.search_field = ''
+        self.n_c_al = ''
         self.fecha_creacion = ''
         self.hora = ''
         self.lista_productos = []
@@ -91,17 +89,17 @@ class Factura(ReciboFactura):
         # ======================Backend connection=============
         self.db_connection = Backend.connection.DatabaseConnection()
 
-    def guardar(self):
+    """def guardar(self):
         try:
             obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_course_database.get_database())
 
             query = 'INSERT INTO facturas (id_factura, id_estudiante, fecha, hora) VALUES(?, ?, ?, ?)'
-            values = (self.id_factura, self.search_field, self.fecha_creacion, self.hora)
+            values = (self.id_factura, self.n_c_al, self.fecha_creacion, self.hora)
             self.db_connection.insert(query, values)
 
         except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA FACTURA {msg}")
+            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA FACTURA {msg}")"""
 
     def remover_producto(self, nombre):
         for lista_productos in self.lista_productos:

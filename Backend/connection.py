@@ -1,6 +1,4 @@
-from socket import gethostname
-
-import pyodbc
+import mysql.connector
 import os
 import pickle
 
@@ -17,26 +15,29 @@ class DatabaseConnection:
 
     def file(self):
         """
-            Eliminando los archivos y extrayendo las credenciales de host, como:
+            Extrayendo las credenciales para la conexión al servidor como:
             host, puerto, nombre de usuario, contraseña que luego se utilizan para conectarse a la base de datos
         """
-        l = gethostname() + "\SQLEXPRESS"
-        u = 'sa'
-        pa = '12345678'
-        self.d_connection(l, u, pa)
 
-    def d_connection(self, host, username, password):
+        self.len = os.path.getsize("./database_data.txt")
+        if self.len > 0:
+            f = open("./database_data.txt", "rb")
+            self.dictcred = pickle.load(f)
+
+            for k, p in self.dictcred.items():
+                l = p[0]
+                po = p[1]
+                u = p[2]
+                pa = p[3]
+                self.d_connection(l, po, u, pa)
+
+    def d_connection(self, host, port, username, password):
         """
             Tomando 4 argumentos funcionales el host es el dominio del servidor, el puerto es donde el servidor proxy
             reenvía,nombre de usuario es el nombre de usuario del host y la contraseña es la contraseña utilizada al
             configurar el usuario
         """
-        server = gethostname() + "\SQLEXPRESS"
-
-        self.connection = pyodbc.connect(
-            'DRIVER={ODBC Driver 17 for SQL Server};'
-            'SERVER=' + server + ';'
-                                 'Trusted_Connection=yes;')
+        self.connection = mysql.connector.connect(host=host, port=port, user=username, password=password)
         self.cursor = self.connection.cursor()
 
     def __del__(self):
@@ -100,3 +101,4 @@ class DatabaseConnection:
 
 
 DatabaseConnection()
+

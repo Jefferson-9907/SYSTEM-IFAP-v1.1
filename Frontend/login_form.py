@@ -1,17 +1,22 @@
 import random
-from datetime import datetime
+from datetime import datetime, date
 from tkinter import *
+
 from PIL import ImageTk
 from ttkthemes import themed_tk as tk
 from tkinter import messagebox
 
-from Backend.conexion import conn
+import Model_class.database_connected
+import Model_class.users_registration
+import Model_class.auditoria_u_registration
 import Frontend.connect_database
 import Frontend.database_connected
 import Backend.connection
 
 from Frontend.Admin.Principal_Window_A import Principal
 from Frontend.Secretary.Principal_Window_S import Principal_S
+from Frontend.Facturation.Principal_Window_F import Principal_F
+
 """
     from Frontend.Facturation.Principal_Window import Principal_S
 """
@@ -175,118 +180,110 @@ class Login:
         self.heading.after(50, self.heading_color)
 
     def validation(self):
-        try:
-            """
-                Valida si las entradas de nombre de usuario/contraseña existen en la base de datos o no, si
-                existen y coinciden con el usuario contraseña, les permite iniciar sesión llamando a otro método,
-                BaseException se maneja con el fin de evitar cualquier error en tiempo de ejecución
-            """
-            if self.username_entry.get() == "":
-                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "POR FAVOR INGRESE SU USUARIO")
+        username = self.username_entry.get()
+        userpassword = self.password_entry.get()
+        self.tipo1 = 'Administrador'
+        self.tipo2 = 'Secretaría'
+        self.tipo3 = 'Caja'
+        tipo1 = self.tipo1
+        tipo2 = self.tipo2
+        tipo3 = self.tipo3
 
-            elif self.password_entry.get() == "":
-                messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "POR FAVOR INGRESE SU CONTRASEÑA")
+        """
+            Valida si las entradas de nombre de usuario/contraseña existen en la base de datos o no, si
+            existen y coinciden con el usuario contraseña, les permite iniciar sesión llamando a otro método,
+            BaseException se maneja con el fin de evitar cualquier error en tiempo de ejecución
+        """
+        if self.username_entry.get() == "":
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "POR FAVOR INGRESE SU USUARIO")
 
-            else:
-                with conn.cursor() as cursor:
-                    self.tipo = 'Administrador'
-                    self.accion = "INGRESO (USUARIO ADMIN)"
+        elif self.password_entry.get() == "":
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "POR FAVOR INGRESE SU CONTRASEÑA")
 
-                    self.query = "SELECT usuario, contrasena, tipo FROM usuarios WHERE usuario=? AND contrasena=?;"
-                    cursor.execute(self.query, (self.username_entry.get(), self.password_entry.get()))
-                    resultado = cursor.fetchall()
+        else:
+            obj_login_users = Model_class.database_connected.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_login_users.get_database())
 
-                    if resultado:
-                        self.query = "SELECT usuario, contrasena, tipo FROM usuarios WHERE usuario=? " \
-                                     "AND contrasena=? AND tipo=?;"
-                        cursor.execute(self.query, (self.username_entry.get(), self.password_entry.get(), self.tipo))
-                        resultado = cursor.fetchall()
+            query = "select * from usuarios where usuario=%s and contrasena=%s;"
+            values = (username, userpassword)
+            data = self.db_connection.search(query, values)
 
-                        if resultado:
+            if data:
+                self.accion = "INGRESO (USUARIO ADMIN)"
+                query = "select * from usuarios where usuario=%s AND contrasena=%s AND tipo=%s;"
+                values = (username, userpassword, tipo1)
+                data = self.db_connection.search(query, values)
+
+                if data:
+                    messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO DE INGRESO (USUARIO)\n"
+                                                               f"USUARIO: {self.username_entry.get()}\n"
+                                                               f"ACCIÓN: {self.accion}\n"
+                                                               f"FECHA: {self.fecha}\n"
+                                                               f"HORA: {self.hora}")
+                    self.audi_users()
+                    root = Toplevel()
+                    Principal(root)
+                    self.root.withdraw()
+                    root.deiconify()
+
+                else:
+                    self.accion = "INGRESO (USUARIO SECRETARÍA)"
+                    query = "select * from usuarios where usuario=%s AND contrasena=%s AND tipo=%s;"
+                    values = (username, userpassword, tipo2)
+                    data = self.db_connection.search(query, values)
+
+                    if data:
+                        messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO DE INGRESO (USUARIO)\n"
+                                                                   f"USUARIO: {self.username_entry.get()}\n"
+                                                                   f"ACCIÓN: {self.accion}\n"
+                                                                   f"FECHA: {self.fecha}\n"
+                                                                   f"HORA: {self.hora}")
+                        self.audi_users()
+                        root = Toplevel()
+                        Principal_S(root)
+                        self.root.withdraw()
+                        root.deiconify()
+
+                    else:
+                        self.accion = "INGRESO (USUARIO CAJA)"
+                        query = "select * from usuarios where usuario=%s AND contrasena=%s AND tipo=%s;"
+                        values = (username, userpassword, tipo3)
+                        data = self.db_connection.search(query, values)
+
+                        if data:
                             messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO DE INGRESO (USUARIO)\n"
                                                                        f"USUARIO: {self.username_entry.get()}\n"
                                                                        f"ACCIÓN: {self.accion}\n"
                                                                        f"FECHA: {self.fecha}\n"
                                                                        f"HORA: {self.hora}")
+                            self.audi_users()
                             root = Toplevel()
-                            Principal(root)
+                            Principal_F(root)
                             self.root.withdraw()
                             root.deiconify()
-                        else:
-                            self.tipo = 'Secretaría'
-                            self.accion = "INGRESO (USUARIO SECRETARÍA)"
+            else:
+                pass
 
-                            self.query = "SELECT usuario, contrasena, tipo FROM usuarios WHERE usuario=? AND " \
-                                         "contrasena=? AND tipo=?;"
-                            cursor.execute(self.query,
-                                           (self.username_entry.get(), self.password_entry.get(), self.tipo))
-                            resultado = cursor.fetchall()
+    def audi_users(self):
+        today = date.today()
+        username = self.username_entry.get()
+        accion = self.accion
+        fecha = f"{today.year}/{today.month}/{today.day}"
+        hour = datetime.now()
+        hora = f"{hour.hour}:{hour.minute}:{hour.second}"
 
-                            if resultado:
-                                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO DE INGRESO (USUARIO)\n"
-                                                                           f"USUARIO: {self.username_entry.get()}\n"
-                                                                           f"ACCIÓN: {self.accion}\n"
-                                                                           f"FECHA: {self.fecha}\n"
-                                                                           f"HORA: {self.hora}")
-                                root = Toplevel()
-                                Principal_S(root)
-                                self.root.withdraw()
-                                root.deiconify()
-
-                            else:
-                                self.tipo = 'Caja'
-                                self.accion = "INGRESO (USUARIO CAJA)"
-
-                                self.query = "SELECT usuario, contrasena, tipo FROM usuarios WHERE usuario=? AND " \
-                                             "contrasena=? AND tipo=?;"
-                                cursor.execute(self.query,
-                                               (self.username_entry.get(), self.password_entry.get(), self.tipo))
-                                resultado = cursor.fetchall()
-
-                                if resultado:
-                                    messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO DE INGRESO (USUARIO)\n"
-                                                                               f"USUARIO: {self.username_entry.get()}\n"
-                                                                               f"ACCIÓN: {self.accion}\n"
-                                                                               f"FECHA: {self.fecha}\n"
-                                                                               f"HORA: {self.hora}")
-
-                                else:
-                                    messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR",
-                                                         f"EL USUARIO: {self.username_entry.get()} "
-                                                         "NO EXISTE\nINTÉNTELO NUEVAMENTE")
-                                    self.username_entry.delete(0, END)
-                                    self.password_entry.delete(0, END)
-                                    self.username_entry.focus()
-
-                    else:
-                        messagebox.showwarning("SYST_CONTROL(IFAP®)-->ERROR", "CREDENCIALES INCORRECTAS,\n"
-                                                                              "INTÉNTELO NUEVAMENTE")
-                        self.username_entry.delete(0, END)
-                        self.password_entry.delete(0, END)
-                        self.username_entry.focus()
-
-        except BaseException as msg:
-            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
-                                                                  f"REVISE LA CONEXIÓN: {msg}")
-
-    """def audi_users(self):
         try:
             obj_aud_user_database = Model_class.auditoria_u_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_aud_user_database.get_database())
 
-            query = 'insert into auditoria_usuarios values (?, ?, ?, ?);'
-            values = (self.username_entry.get(), self.accion, self.fecha, self.hora)
+            query = 'insert into auditoria_usuarios(usuario, accion, fecha, hora) values (%s, %s, %s, %s);'
+            values = (username, accion, fecha, hora)
 
             self.db_connection.insert(query, values)
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"REGISTRO (USUARIOS)\n"
-                                                       f"USUARIO: {self.username_entry.get()}\n"
-                                                       f"ACCIÓN: {self.accion}\n"
-                                                       f"FECHA: {self.fecha}\n"
-                                                       f"HORA: {self.hora}")
 
         except BaseException as msg:
             messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
-                                                                  f"REVISE LA CONEXIÓN: {msg}")"""
+                                                                  f"REVISE LA CONEXIÓN: {msg}")
 
     def click_database(self):
         """"

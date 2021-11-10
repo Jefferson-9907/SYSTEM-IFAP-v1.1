@@ -7,6 +7,7 @@ from tkinter import messagebox, ttk
 import Frontend.connect_database
 import Frontend.login_form
 import Model_class.database_connected
+import Model_class.users_registration
 
 
 class DatabaseConnected:
@@ -42,7 +43,7 @@ class DatabaseConnected:
         self.count = 0
         self.text = ''
         self.color = ["#4f4e4d", "#f29844", "red2"]
-        self.heading = Label(self.root, text=self.txt, font=('yu gothic ui', 30, "bold"), bg="#000000",
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
                              fg='black',
                              bd=5,
                              relief=FLAT)
@@ -146,18 +147,39 @@ class DatabaseConnected:
         self.db_connection.create(obj_admin_database.get_database())
 
         if self.email_entry.get() == "":
-            messagebox.showerror("Error", "POR FAVOR INGRESE SU EMAIL")
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "POR FAVOR INGRESE SU EMAIL")
             self.email_entry.focus()
 
         elif self.username_entry.get() == "":
-            messagebox.showerror("Error", "POR FAVOR INGRESE SU USUARIO")
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "POR FAVOR INGRESE SU USUARIO")
             self.username_entry.focus()
 
         elif self.password_entry.get() == "":
-            messagebox.showerror("ERROR!!!", "POR FAVOR INGRESE SU CONTRASEÑA")
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "POR FAVOR INGRESE SU CONTRASEÑA")
             self.password_entry.focus()
 
         else:
+            try:
+                obj_create_database = Model_class.database_connected.GetDatabase('use ddbb_sys_ifap;')
+                self.db_connection.create(obj_create_database.get_database())
+                self.tipo = 'Administrador'
+                self.tipo_e = self.tipo
+
+                obj_database_connected = Model_class.database_connected.AdminData(self.username_entry.get(),
+                                                                                  self.email_entry.get(),
+                                                                                  self.password_entry.get(),
+                                                                                  self.tipo_e)
+                query = 'insert into usuarios (usuario, email, contrasena, tipo) values (%s, %s, %s, %s);'
+                values = (obj_database_connected.get_username(), obj_database_connected.get_email(),
+                          obj_database_connected.get_password(), obj_database_connected.get_tipo())
+
+                self.db_connection.insert(query, values)
+                messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "USUARIO ADMIN AGREGADO CORRECTAMENTE")
+                self.go_to_login()
+
+            except BaseException as msg:
+                messagebox.showerror("SYST_CONTROL(IFAP®)", f"There is some error Submitting Credentials\n{msg}")
+
             obj_create_database = Model_class.database_connected.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_create_database.get_database())
             self.tipo = 'Administrador'
@@ -166,7 +188,7 @@ class DatabaseConnected:
             query = "insert into usuarios values (?, ?, ?, ?);"
             values = (self.username_entry.get(), self.email_entry.get(), self.password_entry.get(), self.tipo_e)
             self.db_connection.insert(query, values)
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", "USUARIO ADMIN AGREGADO CORRECTAMENTE")
+            messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "USUARIO ADMIN AGREGADO CORRECTAMENTE")
             self.go_to_login()
 
     def click_login(self):
@@ -180,7 +202,7 @@ class DatabaseConnected:
         win.deiconify()
 
     def click_exit(self):
-        ask = messagebox.askyesnocancel('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')
+        ask = messagebox.askyesnocancel('SYST_CONTROL(IFAP®)-->(CERRAR SESIÓN)', 'CERRAR SYST_CONTROL(IFAP®)')
         if ask is True:
             self.root.quit()
 

@@ -7,9 +7,8 @@ import Frontend.login_form
 
 class StartApp:
     """
-        Esto comprobará si la base de datos ya está conectada o no si ya está conectado,
-        el formulario de inicio de sesión aparecerá de lo contrario le pedirá que conecte
-        la base de datos llamando a la base de datos de conexión.
+        Comprobará si la base de datos ya está conectada, el formulario de inicio de sesión aparecerá
+        de lo contrario le pedirá que conecte la base de datos llamando a la base de datos para la conexión.
     """
 
     def __init__(self, window):

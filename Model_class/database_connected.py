@@ -35,10 +35,11 @@ class GetDatabase:
 class AdminData:
     """ This class is used to connect frond end and backend for Admin Data"""
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, tipo):
         self.__email = email
         self.__username = username
         self.__password = password
+        self.__tipo = tipo
 
     # set methods
 
@@ -51,6 +52,9 @@ class AdminData:
     def set_password(self, password):
         self.__password = password
 
+    def set_tipo(self, tipo):
+        self.__tipo = tipo
+
     # get methods
 
     def get_username(self):
@@ -61,3 +65,6 @@ class AdminData:
 
     def get_password(self):
         return self.__password
+
+    def get_tipo(self):
+        return self.__tipo

@@ -1,4 +1,3 @@
-from socket import gethostname
 from tkinter import *
 from PIL import ImageTk
 from ttkthemes import themed_tk as tk
@@ -47,7 +46,7 @@ class ConnectDatabase:
         self.count = 0
         self.text = ''
         self.color = ["#4f4e4d", "#f29844", "red2"]
-        self.heading = Label(self.root, text=self.txt, font=('yu gothic ui', 30, "bold"),
+        self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35),
                              bg="#000000", fg='black', bd=5, relief=FLAT)
         self.heading.place(x=0, y=0, width=538)
         self.slider()
@@ -63,7 +62,7 @@ class ConnectDatabase:
 
         self.host_entry = Entry(self.Manage_Frame_Connec_ddbb, highlightthickness=0, relief=FLAT, bg="white",
                                 fg="#6b6a69", font=("yu gothic ui semibold", 12))
-        self.host_entry.insert(0, gethostname())
+        self.host_entry.insert(0, "localhost")
         self.host_entry.place(x=85, y=53, width=380)
 
         # ========================================================================
@@ -178,28 +177,51 @@ class ConnectDatabase:
 
     def store_database(self):
 
-        # toma la entrada del usuario para la conexión del host y la almacena en un archivo .txt
+        """
+        toma como parámetros las entradas del usuario para la conexión al servidor
+        """
 
         self.dictcred = {}
 
         le = os.path.getsize("database_data.txt")
 
-        host = gethostname() + "\SQLEXPRESS"
+        host = self.host_entry.get()
+        port = self.port_entry.get()
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        self.listcred1 = [host, username, password]
-        di = {1: self.listcred1}
+        # verifica si las entradas están vacías
+        if host == "":
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA!!!)", "RELLENE EL CAMPO: Host")
+            self.host_entry.focus()
 
-        if le == 0:
-            f = open("database_data.txt", "wb")
-            self.dictcred.update(di)
-            pickle.dump(self.dictcred, f)
-            messagebox.showinfo("AVISO!!!", "TUS DATOS SE HAN GUARDADO EXITOSAMENTE")
-            f.close()
+        elif port == "":
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA!!!)", "RELLENE EL CAMPO: Port")
+            self.port_entry.focus()
+
+        elif username == "":
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA!!!)", "RELLENE EL CAMPO: Username")
+            self.username_entry.focus()
+
+        elif password == "":
+            messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA!!!)", "RELLENE EL CAMPO: Password")
+            self.password_entry.focus()
 
         else:
-            messagebox.showinfo("AVISO", "SE HA CONECTADO AL SERVIDOR DE MANERA EXITOSA!!!")
+            self.listcred1 = [host, port, username, password]
+            di = {1: self.listcred1}
+
+            if le == 0:
+                f = open("database_data.txt", "wb")
+                self.dictcred.update(di)
+                pickle.dump(self.dictcred, f)
+                messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "CONEXIÓN AL SERVIDOR HA SIDO GUARDADA "
+                                                                     "CORRECTAMENTE")
+                f.close()
+
+            else:
+                messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ADVERTENCIA!!!)", "YA SE ENCUENTRA CONECTADO AL "
+                                                                              "SERVIDOR\n ¿DESEA DESCONECTARSE?")
 
     def click_submit(self):
         """
@@ -211,31 +233,47 @@ class ConnectDatabase:
             le = os.path.getsize("./database_data.txt")
             if le == 0:
                 obj_connect_db = Model_class.connect_database.ConnectDatabase(self.host_entry.get(),
+                                                                              self.port_entry.get(),
                                                                               self.username_entry.get(),
                                                                               self.password_entry.get())
-                self.db_connection.d_connection(obj_connect_db.get_host(), obj_connect_db.get_username(),
+                self.db_connection.d_connection(obj_connect_db.get_host(), obj_connect_db.get_port(),
+                                                obj_connect_db.get_username(),
                                                 obj_connect_db.get_password())
-                messagebox.showinfo("ÉXITO!!!", "CONEXION AL SERVIDOR EXITOSA")
+                messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "CONEXION AL SERVIDOR EXITOSA")
                 self.store_database()
-                self.create_tables()
+
+                try:
+                    obj_create_database = Model_class.connect_database.CreateDatabase('CREATE DATABASE IF NOT EXISTS '
+                                                                                      'ddbb_sys_ifap;')
+                    self.db_connection.create(obj_create_database.get_database())
+                    messagebox.showinfo("ÉXITO", "BASE DE DATOS \n ddbb_sys_ifap\n CREADA SATISFACTORIAMENTE")
+                    self.create_tables()
+
+                except BaseException as msg:
+                    obj_create_database = Model_class.connect_database.CreateDatabase('USE ddbb_sys_ifap;')
+                    self.db_connection.create(obj_create_database.get_database())
+                    messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"CREACIÓN DE BASE DE DATOS INTERRUMPIDA,\n"
+                                                                          f"YA EXISTE LA BASE DE DATOS!\n {msg}")
+                    return
 
             else:
-                messagebox.showerror("ERROR", "ES POSIBLE QUE LA BASE DE DATOS YA ESTÉ CONECTADA")
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "ES POSIBLE QUE LA BASE DE DATOS YA ESTÉ "
+                                                                      "CONECTADA")
                 """self.create_tables()"""
 
         except BaseException as msg:
 
-            messagebox.showerror("ERROR!!!", f"NO FUÉ POSIBLE CONECTARSE AL SERVIDOR\n {msg}")
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"NO FUÉ POSIBLE CONECTARSE AL SERVIDOR\n {msg}")
             return
 
     def create_tables(self):
         try:
-            obj_create_database = Model_class.connect_database.CreateDatabase('use ddbb_sys_ifap;')
+            obj_create_database = Model_class.connect_database.CreateDatabase('USE ddbb_sys_ifap;')
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE usuarios('
-                'id_usuario int IDENTITY(1,1) NOT NULL,'
+                'CREATE TABLE IF NOT EXISTS usuarios('
+                'id_usuario int AUTO_INCREMENT NOT NULL,'
                 'usuario varchar(256) NOT NULL,'
                 'email varchar(100) NOT NULL,'
                 'contrasena varchar(254) NOT NULL,'
@@ -246,8 +284,8 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE auditoria_usuarios('
-                'id_auditoria int NOT NULL IDENTITY(1,1),'
+                'CREATE TABLE IF NOT EXISTS auditoria_usuarios('
+                'id_auditoria int AUTO_INCREMENT NOT NULL,'
                 'usuario varchar(50) NOT NULL,'
                 'accion varchar(50) NOT NULL,'
                 'fecha DATE NOT NULL,'
@@ -256,7 +294,7 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE estudiantes('
+                'CREATE TABLE IF NOT EXISTS estudiantes('
                 'id_estudiante VARCHAR(20) NOT NULL,'
                 'nombres VARCHAR(50) NOT NULL,'
                 'apellidos VARCHAR(50) NOT NULL,'
@@ -273,7 +311,7 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE asesores('
+                'CREATE TABLE IF NOT EXISTS asesores('
                 'id_asesor VARCHAR(20) NOT NULL,'
                 'nombres VARCHAR(50) NOT NULL,'
                 'apellidos VARCHAR(50) NOT NULL,'
@@ -285,7 +323,7 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE cursos('
+                'CREATE TABLE IF NOT EXISTS cursos('
                 'id_curso INT NOT NULL,'
                 'nombre_curso VARCHAR(50),'
                 'costo_matricula REAL,'
@@ -295,23 +333,23 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             """obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE dias('
-                'id_dia INT IDENTITY(1,1) NOT NULL,'
+                'CREATE TABLE IF NOT EXISTS dias('
+                'id_dia INT AUTO_INCREMENT NOT NULL,'
                 'dia VARCHAR(20) NOT NULL,'
                 'PRIMARY KEY (id_dia),'
                 'UNIQUE (dia));')
             self.db_connection.create(obj_create_database.get_database())"""
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE horas('
-                'id_hora INT IDENTITY(1,1),'
+                'CREATE TABLE IF NOT EXISTS horas('
+                'id_hora INT AUTO_INCREMENT,'
                 'hora VARCHAR(20),'
                 'PRIMARY KEY (id_hora),'
                 'UNIQUE (hora));')
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE paralelos('
+                'CREATE TABLE IF NOT EXISTS paralelos('
                 'id_paralelo INT NOT NULL,'
                 'nombre_curso VARCHAR(50) NOT NULL,'
                 'nombre_paralelo VARCHAR(50) NOT NULL,'
@@ -325,8 +363,8 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE implementos('
-                'id_implemento INT IDENTITY(1,1),'
+                'CREATE TABLE IF NOT EXISTS implementos('
+                'id_implemento INT AUTO_INCREMENT,'
                 'descripcion VARCHAR(50) NOT NULL,'
                 'costo_implemento REAL NOT NULL,'
                 'PRIMARY KEY (id_implemento),'
@@ -334,7 +372,7 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE matriculas('
+                'CREATE TABLE IF NOT EXISTS matriculas('
                 'id_matricula VARCHAR(20) NOT NULL,'
                 'estudiante VARCHAR(100) NOT NULL,'
                 'paralelo VARCHAR(50) NOT NULL,'
@@ -343,8 +381,8 @@ class ConnectDatabase:
                 'UNIQUE (estudiante));')
             self.db_connection.create(obj_create_database.get_database())
 
-            obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE facturas('
+            """obj_create_database = Model_class.connect_database.CreateDatabase(
+                'CREATE TABLE IF NOT EXISTS facturas('
                 'id_factura VARCHAR(20) NOT NULL,'
                 'id_estudiante VARCHAR(20) NOT NULL,'
                 'fecha VARCHAR(50) NOT NULL,'
@@ -353,7 +391,7 @@ class ConnectDatabase:
             self.db_connection.create(obj_create_database.get_database())
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
-                'CREATE TABLE detalle_facturas('
+                'CREATE TABLE IF NOT EXISTS detalle_facturas('
                 'id_detalle_factura VARCHAR(20) NOT NULL,'
                 'id_factura VARCHAR(20) NOT NULL,'
                 'id_implemento INT NOT NULL,'
@@ -362,12 +400,12 @@ class ConnectDatabase:
                 'PRIMARY KEY (id_detalle_factura),'
                 'FOREIGN KEY (id_Factura) REFERENCES facturas (id_factura),'
                 'FOREIGN KEY (id_implemento) REFERENCES implementos (id_implemento));')
-            self.db_connection.create(obj_create_database.get_database())
+            self.db_connection.create(obj_create_database.get_database())"""
 
             messagebox.showinfo("ÉXITO!!!", "TABLAS DE LA BASE DE DATOS CREADAS CORRECTAMENTE.")
 
         except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"FALLÓ AL CREAR LAS TABLAS EN LA BASE DE DATOS, {msg}")
+            messagebox.showerror("ERROR!!!", f"FALLÓ AL CREAR LAS TABLAS EN LA BASE DE DATOS,\n{msg}")
 
         ask = messagebox.askokcancel("ADMINISTRADOR DE CONFIGURACIÓN",
                                      "¿CONFIGUAR INICIO DE SESIÓN POR PRIMERA "
@@ -427,16 +465,17 @@ class SaveDatabaseHost(Backend.connection.DatabaseConnection):
         self.file()
 
     def file(self):
-        self.len = os.path.getsize("../Frontend./database_data.txt")
+        self.len = os.path.getsize("./database_data.txt")
         if self.len > 0:
-            f = open("../Frontend./database_data.txt", "rb")
+            f = open("./database_data.txt", "rb")
             self.dictcred = pickle.load(f)
 
             for k, p in self.dictcred.items():
                 l = p[0]
-                u = p[1]
-                pa = p[2]
-                self.d_connection(l, u, pa)
+                po = p[1]
+                u = p[2]
+                pa = p[3]
+                self.d_connection(l, po, u, pa)
 
 
 def root():

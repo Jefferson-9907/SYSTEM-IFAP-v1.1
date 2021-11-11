@@ -396,7 +396,7 @@ class Assesor:
             self.db_connection.create(obj_assesor_database.get_database())
 
             query = 'insert into asesores (id_asesor, nombres, apellidos, direccion, correo, celular) ' \
-                    'values (?, ?, ?, ?, ?, ?);'
+                    'values (%s, %s, %s, %s, %s, %s);'
             values = (self.e_n_ced_as.get(), self.e_nombres_as.get(), self.e_apellidos_as.get(),
                       self.e_direccion_as.get(), self.e_correo_as.get(), self.e_n_celular_as.get()
                       )
@@ -405,7 +405,7 @@ class Assesor:
 
             self.show_data_as()
             self.clear_field_as()
-            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"ASESOR: {values[1]} {values[2]}\n "
+            messagebox.showinfo("SYST_CONTROL(IFAP®)", f"ASESOR: {values[1]} {values[2]}\n"
                                                        f"CON No. DE CÉDULA: {values[0]}\n"
                                                        f"REGISTRADO CORRECTAMENTE")
 
@@ -466,8 +466,8 @@ class Assesor:
             obj_students_database = Model_class.assesor_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_students_database.get_database())
 
-            query = 'UPDATE asesores SET id_asesor=?, nombres=?, apellidos=?, direccion=?, correo=?, celular=? ' \
-                    'WHERE id_asesor=?'
+            query = 'UPDATE asesores SET id_asesor=%s, nombres=%s, apellidos=%s, direccion=%s, correo=%s, celular=%s ' \
+                    'WHERE id_asesor=%s'
             values = (self.e_n_ced_as.get(), self.e_nombres_as.get(), self.e_apellidos_as.get(),
                       self.e_direccion_as.get(), self.e_correo_as.get(), self.e_n_celular_as.get(),
                       self.e_n_ced_as.get()
@@ -492,16 +492,17 @@ class Assesor:
 
             tree_view_content = self.Table.focus()
             tree_view_items = self.Table.item(tree_view_content)
-            tree_view_values = tree_view_items['values'][1]
+            tree_view_values = tree_view_items['values'][0]
+            tree_view_values_1 = tree_view_items['values'][1] + " " + tree_view_items['values'][2]
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
-                                      f"DESEA ELIMINAR AL ASESOR: {tree_view_values}")
+                                      f"DESEA ELIMINAR AL ASESOR: {tree_view_values_1}")
             if ask is True:
-                query = "delete from asesores where nombres=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from asesores where id_asesor=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
-                self.clear_field_as()
                 self.show_data_as()
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ASESOR: {tree_view_values} "
+                self.clear_field_as()
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ASESOR: {tree_view_values_1} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
             else:
                 pass

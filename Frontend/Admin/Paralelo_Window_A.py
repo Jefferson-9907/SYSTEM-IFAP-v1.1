@@ -209,7 +209,6 @@ class Paralelo:
         self.l_id_paralelo.grid(column=0, row=1, padx=1, pady=5)
         self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11')
         self.e_id_paralelo.grid(column=1, row=1, padx=1, pady=5, sticky="W")
-        self.e_id_paralelo_1.set(self.id_list)
         self.e_id_paralelo.focus()
 
         try:
@@ -469,7 +468,7 @@ class Paralelo:
                 obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
                 self.db_connection.create(obj_paralelo_database.get_database())
 
-                query = 'insert into horas (hora) values (?);'
+                query = 'insert into horas (hora) values (%s);'
                 values = self.hora_e_s
                 self.db_connection.insert(query, values)
                 self.e_hora.set("")
@@ -584,7 +583,7 @@ class Paralelo:
             obj_paralelos_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_paralelos_database.get_database())
             query = 'insert into paralelos (id_paralelo, nombre_curso, nombre_paralelo, dia, hora, ' \
-                    'fecha_inicio, fecha_fin, duracion) values (?, ?, ?, ?, ?, ?, ?, ?);'
+                    'fecha_inicio, fecha_fin, duracion) values (%s, %s, %s, %s, %s, %s, %s, %s);'
             values = (self.e_id_paralelo.get(), self.e_nombre_curso.get(), self.e_nom_par.get(), self.e_dia.get(),
                       self.e_hora.get(), self.e_f_i_par.get(), self.e_f_f_par.get(), self.e_dur_par.get()
                       )
@@ -636,8 +635,8 @@ class Paralelo:
             obj_paralelos_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_paralelos_database.get_database())
 
-            query = 'update paralelos set id_paralelo=?, nombre_curso=?, nombre_paralelo=?, dia=?, hora=?, ' \
-                    'fecha_inicio=?, fecha_fin=?, duracion=? where id_paralelo=?'
+            query = 'update paralelos set id_paralelo=%s, nombre_curso=%s, nombre_paralelo=%s, dia=%s, hora=%s, ' \
+                    'fecha_inicio=%s, fecha_fin=%s, duracion=%s where id_paralelo=%s'
             values = (self.e_id_paralelo.get(), self.e_nombre_curso.get(), self.e_nom_par.get(), self.e_dia.get(),
                       self.e_hora.get(), self.e_f_i_par.get(), self.e_f_f_par.get(), self.e_dur_par.get(),
                       self.e_id_paralelo.get()
@@ -667,8 +666,8 @@ class Paralelo:
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
                                       f"DESEA ELIMINAR AL PARALELO: {tree_view_values_1}")
             if ask is True:
-                query = "delete from paralelos where id_paralelo=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from paralelos where id_paralelo=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.clear_field_par()
                 self.show_data_par()

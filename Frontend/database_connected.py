@@ -3,7 +3,7 @@ from PIL import ImageTk
 from ttkthemes import themed_tk as tk
 import random
 import Backend.connection
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 import Frontend.connect_database
 import Frontend.login_form
 import Model_class.database_connected
@@ -178,18 +178,8 @@ class DatabaseConnected:
                 self.go_to_login()
 
             except BaseException as msg:
-                messagebox.showerror("SYST_CONTROL(IFAP®)", f"There is some error Submitting Credentials\n{msg}")
-
-            obj_create_database = Model_class.database_connected.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_create_database.get_database())
-            self.tipo = 'Administrador'
-            self.tipo_e = self.tipo
-
-            query = "insert into usuarios values (?, ?, ?, ?);"
-            values = (self.username_entry.get(), self.email_entry.get(), self.password_entry.get(), self.tipo_e)
-            self.db_connection.insert(query, values)
-            messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", "USUARIO ADMIN AGREGADO CORRECTAMENTE")
-            self.go_to_login()
+                messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR!!!)", f"ERROR AL CONECTARSE AL SERVIDOR,\n"
+                                                                         f"REVISE LA CONEXIÓN: {msg}")
 
     def click_login(self):
         """

@@ -57,7 +57,7 @@ class Login():
         sql = "select user, pass from users where user=%s and pass=%s"
         val = (username, userpassword)
         mycursor.execute(sql, val)
-        result = mycursor.fetchone()
+        result = mycurs or.fetchone()
         self.entry_username.delete(0, END)
         self.entry_password.delete(0, END)
         if result:

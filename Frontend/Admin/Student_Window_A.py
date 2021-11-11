@@ -249,22 +249,24 @@ class Student:
         self.e_telefono_al.grid(column=1, row=8, padx=1, pady=5, sticky="W")
 
         self.l_representante_al = Label(Manage_Frame, text='NOMBRE REPR.', width='15',
-                                        font=('Copperplate Gothic Bold', 10),
-                                        bg='#808080')
+                                        font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_representante_al.grid(column=0, row=9, padx=1, pady=5)
         self.e_representante_al = Entry(Manage_Frame, textvariable=self.e_representante_al_1, width='33')
+        self.e_representante_al.configure(state='disabled')
         self.e_representante_al.grid(column=1, row=9, padx=1, pady=5, sticky="W")
 
         self.l_n_c_representante_al = Label(Manage_Frame, text='No. CÉDULA REPR.', width='15',
                                             font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_n_c_representante_al.grid(column=0, row=10, padx=1, pady=5)
         self.e_n_c_representante_al = Entry(Manage_Frame, textvariable=self.e_n_c_representante_al_1, width='33')
+        self.e_n_c_representante_al.configure(state='disabled')
         self.e_n_c_representante_al.grid(column=1, row=10, padx=1, pady=5, sticky="W")
 
         self.l_observacion_al = Label(Manage_Frame, text='OBSERV.', width='15', font=('Copperplate Gothic Bold', 10),
                                       bg='#808080')
         self.l_observacion_al.grid(column=0, row=11, padx=1, pady=5)
         self.e_observacion_al = Entry(Manage_Frame, textvariable=self.e_observacion_al_1, width='33')
+        self.e_observacion_al_1.set("S/O")
         self.e_observacion_al.grid(column=1, row=11, padx=1, pady=5, sticky="W")
 
         # Button Frame
@@ -441,8 +443,7 @@ class Student:
 
         if self.e_cedula_al.get() == '' or self.e_nombres_al.get() == '' or self.e_apellidos_al.get() == '' or \
                 self.e_edad_al.get() == '' or self.e_direccion_al.get() == '' or self.e_correo_al.get() == '' or \
-                self.e_celular_al.get() == '' or self.e_telefono_al.get() == '' or self.e_representante_al.get() == '' \
-                or self.e_n_c_representante_al.get() == '' or self.e_observacion_al.get() == '':
+                self.e_celular_al.get() == '' or self.e_observacion_al.get() == '':
             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
 
         elif self.e_cedula_al.get() in self.estudiante_list:
@@ -461,7 +462,8 @@ class Student:
             self.db_connection.create(obj_students_database.get_database())
 
             query = 'insert into estudiantes (id_estudiante, nombres, apellidos, edad, direccion, correo, celular, ' \
-                    'telefono, representante, cedula_r, observacion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
+                    'telefono, representante, cedula_r, observacion) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ' \
+                    '%s); '
             values = (self.e_cedula_al.get(), self.e_nombres_al.get(), self.e_apellidos_al.get(), self.e_edad_al.get(),
                       self.e_direccion_al.get(), self.e_correo_al.get(), self.e_celular_al.get(),
                       self.e_telefono_al.get(), self.e_representante_al.get(), self.e_n_c_representante_al.get(),
@@ -546,8 +548,9 @@ class Student:
             obj_students_database = Model_class.students_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_students_database.get_database())
 
-            query = 'update estudiantes set id_estudiante=?, nombres=?, apellidos=?, edad=?, direccion=?, correo=?, ' \
-                    'celular=?, telefono=?, representante=?, cedula_r=?, observacion=? where id_estudiante=?'
+            query = 'update estudiantes set id_estudiante=%s, nombres=%s, apellidos=%s, edad=%s, direccion=%s, ' \
+                    'correo=%s, celular=%s, telefono=%s, representante=%s, cedula_r=%s, observacion=%s ' \
+                    'where id_estudiante=%s'
             values = (self.e_cedula_al.get(), self.e_nombres_al.get(), self.e_apellidos_al.get(), self.e_edad_al.get(),
                       self.e_direccion_al.get(), self.e_correo_al.get(), self.e_celular_al.get(),
                       self.e_telefono_al.get(), self.e_representante_al.get(), self.e_n_c_representante_al.get(),
@@ -556,9 +559,9 @@ class Student:
             self.db_connection.insert(query, values)
             self.show_data()
             messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", f"DATOS DEL ESTUDIANTE: {self.e_nombres_al.get()}"
-                                                       f"{self.e_apellidos_al.get()}\n"
-                                                       f"CON No. DE CÉDULA: {self.e_cedula_al.get()}\n"
-                                                       f"HAN SIDO ACTUALIZADOS DEL REGISTRO")
+                                                                 f"{self.e_apellidos_al.get()}\n"
+                                                                 f"CON No. DE CÉDULA: {self.e_cedula_al.get()}\n"
+                                                                 f"HAN SIDO ACTUALIZADOS DEL REGISTRO")
             self.clear_field()
 
         except BaseException as msg:
@@ -577,11 +580,11 @@ class Student:
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
                                       f"DESEA ELIMINAR AL ESTUDIANTE: {tree_view_values_1}")
             if ask is True:
-                query = "delete from estudiantes where id_estudiante=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from estudiantes where id_estudiante=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.show_data()
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ESTUDIANTE: {tree_view_values} "
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL ESTUDIANTE: {tree_view_values_1} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.clear_field()
 

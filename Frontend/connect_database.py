@@ -324,7 +324,7 @@ class ConnectDatabase:
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
                 'CREATE TABLE IF NOT EXISTS cursos('
-                'id_curso INT NOT NULL,'
+                'id_curso INT AUTO_INCREMENT NOT NULL,'
                 'nombre_curso VARCHAR(50),'
                 'costo_matricula REAL,'
                 'costo_mensual REAL,'
@@ -350,7 +350,7 @@ class ConnectDatabase:
 
             obj_create_database = Model_class.connect_database.CreateDatabase(
                 'CREATE TABLE IF NOT EXISTS paralelos('
-                'id_paralelo INT NOT NULL,'
+                'id_paralelo INT AUTO_INCREMENT NOT NULL,'
                 'nombre_curso VARCHAR(50) NOT NULL,'
                 'nombre_paralelo VARCHAR(50) NOT NULL,'
                 'dia VARCHAR(20) NOT NULL,'
@@ -435,21 +435,20 @@ class ConnectDatabase:
             self.root.quit()
 
     def click_wipe(self):
-        ask = messagebox.askokcancel("ELIMINAR", "¿ESTÁS SEGURO/A DE BORRAR LA BASE DE DATOS DEL SISTEMA??\n"
-                                                 "TUS DATOS SERÁN GUARDADOS!!!")
-        if ask is True:
-            try:
+        try:
+            ask = messagebox.askokcancel("ELIMINAR", "¿ESTÁS SEGURO/A DE BORRAR LA BASE DE DATOS DEL SISTEMA??\n"
+                                                     "TUS DATOS SERÁN GUARDADOS!!!")
+            if ask is True:
                 obj_create_database = Model_class.connect_database.CreateDatabase('use ddbb_sys_ifap;')
                 self.db_connection.create(obj_create_database.get_database())
 
                 obj_create_database = Model_class.connect_database.CreateDatabase('drop database ddbb_sys_ifap;')
                 self.db_connection.create(obj_create_database.get_database())
-                messagebox.showinfo("AVISO!!!", "BASE DE DATOS ELIMINADA EXITOSAMENTE")
+                messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", f"BASE DE DATOS ELIMINADA EXITOSAMENTE")
 
-            except BaseException as msg:
-                messagebox.showerror("ERROR!!!", f"IMPOSIBLE ELIMINAR UNA BASE DE DATOS INEXISTENTE!!!, {msg}")
-        else:
-            pass
+        except BaseException as msg:
+            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", f"DEBE DE CONECTARSE PRIMERO A LA BASE DE DATOS,\n"
+                                                                  f"REVISE LA CONEXIÓN: {msg}")
 
 
 class SaveDatabaseHost(Backend.connection.DatabaseConnection):

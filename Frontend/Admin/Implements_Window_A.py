@@ -371,7 +371,7 @@ class Implement:
             obj_usuarios_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_usuarios_database.get_database())
 
-            query = 'insert into implementos (descripcion, costo_implemento) values (?, ?);'
+            query = 'insert into implementos (descripcion, costo_implemento) values (%s, %s);'
             values = (self.e_descr.get(), self.e_cost_imple.get())
             self.db_connection.insert(query, values)
 
@@ -409,7 +409,7 @@ class Implement:
             obj_implements_database = Model_class.implement_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_implements_database.get_database())
 
-            query = f"""UPDATE implementos SET descripcion=?, costo_implemento=? WHERE id_implemento=?"""
+            query = f"""UPDATE implementos SET descripcion=%s, costo_implemento=%s WHERE id_implemento=%s"""
 
             values = (self.descripcion.get(), self.costo_impl.get(), self.id_implemento.get())
             self.db_connection.insert(query, values)
@@ -432,15 +432,16 @@ class Implement:
 
             tree_view_content = self.Table.focus()
             tree_view_items = self.Table.item(tree_view_content)
-            tree_view_values = tree_view_items['values'][1]
+            tree_view_values = tree_view_items['values'][0]
+            tree_view_values_1 = tree_view_items['values'][1]
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
-                                      f"DESEA ALIMINAR AL IMPLEMENTO: {tree_view_values}")
+                                      f"DESEA ALIMINAR AL IMPLEMENTO: {tree_view_values_1}")
             if ask is True:
-                query = "delete from implementos where descripcion=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from implementos where descripcion=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.show_data_impl()
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL IMPLEMENTO: {tree_view_values} "
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL IMPLEMENTO: {tree_view_values_1} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.clear_field_impl()
 

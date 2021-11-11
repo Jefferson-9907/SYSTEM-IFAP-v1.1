@@ -7,7 +7,6 @@ from tkinter import messagebox
 
 import Backend.connection
 import Model_class.users_registration
-from Backend.conexion import conn
 
 import Frontend.Admin.Principal_Window_A
 import Frontend.login_form
@@ -248,18 +247,27 @@ class Password:
             messagebox.showerror("SYST_CONTROL(IFAP®) (ERROR)", "POR FAVOR INGRESE EL CAMPO: CONTRASEÑA NUEVA")
 
         else:
-            with conn.cursor() as cursor:
-                query = "SELECT contrasena FROM usuarios WHERE usuario=? AND contrasena=?"
-                values = (self.username.get(), self.old_password.get())
-                cursor.execute(query, values)
-                resultado = cursor.fetchall()
+            username = self.username.get()
+            userpassword = self.old_password.get()
 
-                if resultado:
+            obj_login_users = Model_class.database_connected.GetDatabase('use ddbb_sys_ifap;')
+            self.db_connection.create(obj_login_users.get_database())
+
+            query = "select * from usuarios where usuario=%s;"
+            values = username
+            data = self.db_connection.search(query, (values,))
+
+            if data:
+                query = "select * from usuarios where contrasena=%s;"
+                values = userpassword
+                data = self.db_connection.search(query, (values,))
+
+                if data:
                     try:
                         obj_students_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
                         self.db_connection.create(obj_students_database.get_database())
 
-                        query = f"""UPDATE usuarios SET contrasena=? WHERE usuario=?"""
+                        query = f"""UPDATE usuarios SET contrasena=%s WHERE usuario=%s"""
 
                         values = (self.new_password.get(), self.username.get())
                         self.db_connection.update(query, values)
@@ -275,10 +283,16 @@ class Password:
                         messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
                                              f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
                                              f"REVISE LA CONEXIÓN: {msg}")
+
                 else:
-                    messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)",
-                                         f"CREDENCIALES INCORRECTAS, INTENTE NUEVAMENTE!!!")
-                    self.limpiar()
+                    messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA)", f"CONTRASEÑA NO VÁLIDA")
+                    self.old_password.set("")
+                    self.e_c_ant.focus()
+
+            else:
+                messagebox.showwarning("SYST_CONTROL(IFAP®)-->(ADVERTENCIA)", f"USUARIO NO VÁLIDO")
+                self.username.set("")
+                self.e_us.focus()
 
     def limpiar(self):
         self.username.set('')

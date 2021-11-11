@@ -451,7 +451,7 @@ class Matricula:
             obj_matricula_database = Model_class.matricula_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_matricula_database.get_database())
 
-            query = 'insert into matriculas (id_matricula, estudiante, paralelo, asesor) values (?, ?, ?, ?);'
+            query = 'insert into matriculas (id_matricula, estudiante, paralelo, asesor) values (%s, %s, %s, %s);'
             values = (self.e_n_mat_al_m.get(), self.e_nombres_al.get(), self.e_n_paralelo.get(), self.e_nombres_as.get()
                       )
 
@@ -518,7 +518,8 @@ class Matricula:
             obj_students_database = Model_class.matricula_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_students_database.get_database())
 
-            query = f"""update matriculas SET id_matricula=?, estudiante=?, paralelo=?, asesor=? WHERE id_matricula=?"""
+            query = f"""update matriculas SET id_matricula=%s, estudiante=%s, paralelo=%s, asesor=%s 
+            WHERE id_matricula=%s"""
             values = (self.e_n_mat_al_m.get(), self.e_nombres_al.get(), self.e_n_paralelo.get(),
                       self.e_nombres_as.get(), self.e_n_mat_al_m.get()
                       )
@@ -542,11 +543,14 @@ class Matricula:
             tree_view_content = self.Table.focus()
             tree_view_items = self.Table.item(tree_view_content)
             tree_view_values = tree_view_items['values'][0]
+            tree_view_values_1 = tree_view_items['values'][1]
+            tree_view_values_2 = tree_view_items['values'][2]
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
-                                      f"DESEA ELIMINAR LA MATRÍCULA: {tree_view_values}")
+                                      f"DESEA ELIMINAR LA MATRÍCULA DE: {tree_view_values_1}\n"
+                                      f"QUE PERTENECE AL PARALELO: {tree_view_values_2}")
             if ask is True:
-                query = "delete from matriculas where id_matricula=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from matriculas where id_matricula=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.show_data_m()
                 messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DE LA MATRÍCULA: {tree_view_values} "

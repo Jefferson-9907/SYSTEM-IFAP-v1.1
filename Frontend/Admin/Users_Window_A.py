@@ -30,15 +30,16 @@ class Users:
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
         self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.configure(bg='#a27114')
 
         imagenes = {
-            'nuevo': PhotoImage(file='../recursos/icon_aceptar.png'),
-            'matricular': PhotoImage(file='../recursos/icon_add.png'),
-            'editar': PhotoImage(file='../recursos/icon_update.png'),
-            'eliminar': PhotoImage(file='../recursos/icon_del.png'),
-            'limpiar': PhotoImage(file='../recursos/icon_clean.png'),
-            'buscar': PhotoImage(file='../recursos/icon_buscar.png'),
-            'todo': PhotoImage(file='../recursos/icon_ver_todo.png'),
+            'nuevo': PhotoImage(file='recursos\\icon_aceptar.png'),
+            'matricular': PhotoImage(file='recursos\\icon_add.png'),
+            'editar': PhotoImage(file='recursos\\icon_update.png'),
+            'eliminar': PhotoImage(file='recursos\\icon_del.png'),
+            'limpiar': PhotoImage(file='recursos\\icon_clean.png'),
+            'buscar': PhotoImage(file='recursos\\icon_buscar.png'),
+            'todo': PhotoImage(file='recursos\\icon_ver_todo.png'),
         }
 
         # =============================================================
@@ -380,7 +381,7 @@ class Users:
             obj_usuarios_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_usuarios_database.get_database())
 
-            query = 'insert into usuarios (usuario, email, contrasena, tipo) values (?, ?, ?, ?);'
+            query = 'insert into usuarios (usuario, email, contrasena, tipo) values (%s, %s, %s, %s);'
             values = (self.e_us.get(), self.e_email.get(), self.e_contr.get(), self.e_tipo.get())
             self.db_connection.insert(query, values)
 
@@ -429,7 +430,7 @@ class Users:
             obj_students_database = Model_class.users_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_students_database.get_database())
 
-            query = f"""UPDATE usuarios SET usuario=?, email=?, contrasena=?, tipo=? WHERE id_usuario=?"""
+            query = f"""UPDATE usuarios SET usuario=%s, email=%s, contrasena=%s, tipo=%s WHERE id_usuario=%s"""
 
             values = (self.e_us.get(), self.e_email.get(), self.e_contr.get(), self.e_tipo.get(), self.e_id_us.get())
             self.db_connection.insert(query, values)
@@ -453,15 +454,16 @@ class Users:
 
             tree_view_content = self.Table.focus()
             tree_view_items = self.Table.item(tree_view_content)
-            tree_view_values = tree_view_items['values'][1]
+            tree_view_values = tree_view_items['values'][0]
+            tree_view_values_1 = tree_view_items['values'][1]
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
-                                      f"DESEA ALIMINAR AL USUARIO: {tree_view_values}")
+                                      f"DESEA ALIMINAR AL USUARIO: {tree_view_values_1}")
             if ask is True:
-                query = "delete from usuarios where usuario=?;"
-                self.db_connection.delete(query, tree_view_values)
+                query = "delete from usuarios where usuario=%s;"
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.show_data_us()
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL USUARIO: {tree_view_values} "
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL USUARIO: {tree_view_values_1} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.clear_field_us()
 

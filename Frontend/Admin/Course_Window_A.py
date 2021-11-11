@@ -182,29 +182,12 @@ class Course:
         self.costo_mensual = DoubleVar()
         self.search_field_curso = StringVar()
 
-        try:
-            obj_courses_database = Model_class.course_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_courses_database.get_database())
-
-            query = "SELECT isnull(max(id_curso+1), 1) FROM cursos"
-            id_tuple = self.db_connection.select(query)
-
-            self.id_list = []
-            for i in id_tuple:
-                id_curso = i[0]
-                self.id_list.append(id_curso)
-
-        except BaseException as msg:
-            print(msg)
-
         self.l_id_curso = Label(self.Manage_Frame_cur, text='ID CURSO', width='18',
                                 font=('Copperplate Gothic Bold', 10),
                                 bg='#808080')
         self.l_id_curso.grid(column=0, row=1, padx=1, pady=5)
-        self.e_id_curso = Entry(self.Manage_Frame_cur, textvariable=self.id_curso, width='10')
+        self.e_id_curso = Entry(self.Manage_Frame_cur, textvariable=self.id_curso, width='10', state='disabled')
         self.e_id_curso.grid(column=1, row=1, padx=1, pady=5, sticky="W")
-        self.e_id_curso.focus()
-        self.id_curso.set(self.id_list)
 
         self.l_n_curso = Label(self.Manage_Frame_cur, text='NOMBRE CURSO', width='18',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
@@ -392,7 +375,8 @@ class Course:
         try:
             obj_course_database = Model_class.course_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_course_database.get_database())
-            query = 'insert into cursos (id_curso, nombre_curso, costo_matricula, costo_mensual) values (?, ?, ?, ?);'
+            query = 'insert into cursos (id_curso, nombre_curso, costo_matricula, costo_mensual) ' \
+                    'values (%s, %s, %s, %s);'
             values = (self.e_id_curso.get(), self.e_n_curso.get(), self.e_cost_mat.get(), self.e_cost_men.get())
             self.db_connection.insert(query, values)
 
@@ -402,7 +386,7 @@ class Course:
                                                        f"ID CURSO: {values[0]},\n "
                                                        f"NOMBRE DE CURSO: {values[1]}\n"
                                                        f"COSTO MATRÍCULA: {values[2]}\n,"
-                                                       f"COSO MENSUAL: {values[3]}")
+                                                       f"COSTO MENSUAL: {values[3]}")
 
         except BaseException as msg:
             messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LOS DATOS DEL USUARIO {msg}")
@@ -432,7 +416,8 @@ class Course:
             obj_course_database = Model_class.course_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_course_database.get_database())
 
-            query = 'update cursos set id_curso=?, nombre_curso=?, costo_matricula=?, costo_mensual=? where id_curso=?'
+            query = 'update cursos set id_curso=%s, nombre_curso=%s, costo_matricula=%s, costo_mensual=%s ' \
+                    'where id_curso=%s'
             values = (self.e_id_curso.get(), self.e_n_curso.get(), self.e_cost_mat.get(), self.e_cost_men.get(),
                       self.e_id_curso.get())
             self.db_connection.insert(query, values)
@@ -457,15 +442,16 @@ class Course:
 
             tree_view_content = self.Table_cur.focus()
             tree_view_items = self.Table_cur.item(tree_view_content)
-            tree_view_values = tree_view_items['values'][1]
+            tree_view_values = tree_view_items['values'][0]
+            tree_view_values_1 = tree_view_items['values'][1]
             ask = messagebox.askyesno("SYST_CONTROL(IFAP®) (CONFIRMACIÓN ELIMINAR)",
-                                      f"DESEA ALIMINAR AL CURSO: {tree_view_values}")
+                                      f"DESEA ALIMINAR EL CURSO: {tree_view_values_1}")
             if ask is True:
                 query = "delete from cursos where nombre_curso=?;"
-                self.db_connection.delete(query, tree_view_values)
+                self.db_connection.delete(query, (tree_view_values,))
 
                 self.clear_field_cur()
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL CURSO: {tree_view_values} "
+                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"DATOS DEL CURSO: {tree_view_values_1} "
                                                            f"ELIMINADOS DEL REGISTRO CORRECTAMENTE!!!")
                 self.show_data_cur()
 

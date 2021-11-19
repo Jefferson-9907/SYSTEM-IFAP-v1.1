@@ -1,23 +1,49 @@
-"""from funciones_auxiliares import conexion_consulta"""
-from tkinter import messagebox
-
-import Model_class.facturas_registration
+from Frontend.Admin.funciones_auxiliares import conexion_consulta
 from Frontend.Admin.reportes import ReciboFactura
-import Backend.connection
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, A4
+from datetime import datetime
+
+import os
 
 
-class Producto:
+class Producto():
 
     def __init__(self, *args, **kwargs):
 
-        self.id_implemento = None
-        self.descripcion = None
-        self.precio = None
+        self.id = None
+        self.nombre = None
+        self.precio_compra = None
+        self.precio_venta = None
+        self.stock = None
+        self.estado = None
 
-    """def seleccionar(self):
-        consulta = 'SELECT * FROM implementos WHERE id_implemento=?'
-        parametros = [self.id_implemento]
-        return conexion_consulta(consulta, parametros)"""
+    def seleccionar(self):
+        consulta = 'SELECT * FROM producto WHERE id=?'
+        parametros = [self.id]
+        return conexion_consulta(consulta, parametros)
+
+    def guardar(self):
+        consulta = 'INSERT INTO producto VALUES(?, ?, ?, ?, ?, ?)'
+        parametros = [(parametro[1]) for parametro in self.__dict__.items()]
+
+        return conexion_consulta(consulta, parametros)
+
+    def actualizar(self):
+        consulta = '''UPDATE producto set id=?, nombre=?, precio_compra=?,
+                    precio_venta=?, inventario=?, estado=? WHERE id=?
+                    '''
+        parametros = [(parametro[1]) for parametro in self.__dict__.items()]
+        parametros.append(self.id)
+        print(parametros)
+
+        return conexion_consulta(consulta, parametros)
+
+    def inactivar(self):
+        consulta = 'UPDATE producto set estado=? WHERE id=?'
+        parametros = [self.estado, self.id]
+        return conexion_consulta(consulta, parametros)
 
     def validar(self):  # Metodo que valida que los inputs no ingrese valores nulos
         atributos = self.__dict__.items()
@@ -38,41 +64,39 @@ class ProductoFacturar(Producto):
     def __init__(self, *args, **kwargs):
         super(Producto, self).__init__(*args, **kwargs)
         self.id_factura = ''
-        self.id_implemento = ''
-        self.precio = 0
         self.cantidad = 0
         self.sub_total = 0
-        self.lista_productos = []
-        self.total = 0
-        self.pago = 0
-        self.cambio = 0
-
-        # ======================Backend connection=============
-        self.db_connection = Backend.connection.DatabaseConnection()
 
     def calcular_subtotal(self):
-        return self.precio * self.cantidad
+        return self.precio_venta * self.cantidad
 
     def convertir_dic(self):
-        return {'codigo': self.id_implemento,
-                'nombre': self.descripcion,
-                'precio_venta': self.precio,
+        return {'codigo': self.id,
+                'nombre': self.nombre,
+                'precio_venta': self.precio_venta,
                 'cantidad': self.cantidad,
                 'sub-total': self.sub_total
                 }
 
-    """def guardar(self):
-        try:
-            obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_course_database.get_database())
+    def guardar(self):
+        consulta = 'INSERT INTO detallefact VALUES(?, ?, ?, ?, ?)'
+        parametros = [self.id_factura, self.id, self.precio_venta, self.cantidad, self.sub_total]
+        conexion_consulta(consulta, parametros)
+        self.reducir_existencia()
 
-            query = 'INSERT INTO detalle_facturas (id_detalle_factura, id_factura, id_implemento, cantidad, ' \
-                    'total_factura) VALUES(?, ?, ?, ?, ?)'
-            values = (self.id_factura, self.id_factura, self.id_implemento, self.precio, self.cantidad)
-            self.db_connection.insert(query, values)
+    def re_imprimir(self):
+        pass
 
-        except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR EL DETALLE DE LA FACTURA {msg}")"""
+    def reducir_existencia(self):
+        producto_reducir = self.seleccionar()
+        for producto_reducido in producto_reducir:
+            stock = int(producto_reducido[4])
+
+        nuevo_stock = stock - self.cantidad
+
+        consulta = 'UPDATE producto set inventario=? WHERE id=?'
+        parametros = [nuevo_stock, self.id]
+        conexion_consulta(consulta, parametros)
 
 
 class Factura(ReciboFactura):
@@ -81,29 +105,37 @@ class Factura(ReciboFactura):
         super(Factura, self).__init__(*args, **kwargs)
 
         self.id_factura = ''
-        self.n_c_al = ''
+        self.id_cliente = ''
         self.fecha_creacion = ''
-        self.hora = ''
+        self.hora_creacion = ''
         self.lista_productos = []
+        self.total = 0
+        self.pago = 0
+        self.cambio = 0
 
-        # ======================Backend connection=============
-        self.db_connection = Backend.connection.DatabaseConnection()
+    def guardar(self):
+        consulta = 'INSERT INTO Factura VALUES(?, ?, ?, ?, ?, ?, ?)'
+        parametros = [
+            self.id_factura, self.id_cliente, self.fecha_creacion,
+            self.hora_creacion, self.total, self.pago, self.cambio
+        ]
+        conexion_consulta(consulta, parametros)
 
-    """def guardar(self):
-        try:
-            obj_course_database = Model_class.facturas_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_course_database.get_database())
+    def obtener_numero_factura(self):
+        consulta = 'SELECT id_factura FROM Factura ORDER BY id_factura DESC LIMIT 1'
+        codigo = conexion_consulta(consulta, parametros=())
 
-            query = 'INSERT INTO facturas (id_factura, id_estudiante, fecha, hora) VALUES(?, ?, ?, ?)'
-            values = (self.id_factura, self.n_c_al, self.fecha_creacion, self.hora)
-            self.db_connection.insert(query, values)
+        for identifacdor in codigo:
+            nuevo_codigo = identifacdor[0]
 
-        except BaseException as msg:
-            messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA FACTURA {msg}")"""
+        dividiendo_digitos = nuevo_codigo.split("-")
+        nuevo_codigo = int(dividiendo_digitos[1]) + 1
+
+        return dividiendo_digitos[0] + '-' + str(nuevo_codigo)
 
     def remover_producto(self, nombre):
         for lista_productos in self.lista_productos:
-            if nombre == lista_productos.descripcion:
+            if nombre == lista_productos.nombre:
                 self.lista_productos.remove(lista_productos)
         return True
 
@@ -113,3 +145,16 @@ class Factura(ReciboFactura):
             total = float(sub_total.calcular_subtotal()) + total
         self.total = total
         return total
+
+
+class Cliente():
+
+    def __init__(self, *args, **kwargs):
+        self.id = ''
+        self.nombre = ''
+        self.direccion = ''
+
+    def guardar(self):
+        consulta = 'INSERT INTO Cliente VALUES (?, ?, ?)'
+        parametros = [self.id, self.nombre, self.direccion]
+        conexion_consulta(consulta, parametros)

@@ -140,6 +140,7 @@ class Student:
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
         self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
+        self.Column7.add_command(label='Usuarios', command=self.users_btn)
         self.Column7.add_separator()
         self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
         self.Column7.add_separator()
@@ -502,7 +503,7 @@ class Student:
         self.content = self.Table.item(self.cursor_row)
         row = self.content['values']
 
-        self.e_cedula_al_1.set(row[0])
+        self.e_cedula_al_1.set(str(row[0]))
         self.e_nombres_al_1.set(row[1])
         self.e_apellidos_al_1.set(row[2])
         self.e_edad_al_1.set(row[3])

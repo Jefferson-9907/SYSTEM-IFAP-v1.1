@@ -133,7 +133,8 @@ class Paralelo:
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
         self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
-        self.Column7.add_separator()
+        self.Column6.add_command(label='Usuarios', command=self.users_btn)
+        self.Column6.add_separator()
         self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
         self.Column7.add_separator()
         self.Column8 = Menu(self.menus, tearoff=0)
@@ -190,7 +191,7 @@ class Paralelo:
         self.search_field_par = StringVar()
 
         try:
-            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
+            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use COMDELFINA;')
             self.db_connection.create(obj_paralelo_database.get_database())
 
             query = "SELECT isnull(max(id_paralelo+1), 1) FROM paralelos"
@@ -207,7 +208,8 @@ class Paralelo:
         self.l_id_paralelo = Label(self.Manage_Frame_par, text='ID PARALELO', width='20',
                                    font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_id_paralelo.grid(column=0, row=1, padx=1, pady=5)
-        self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11')
+        self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11',
+                                   state='disabled')
         self.e_id_paralelo.grid(column=1, row=1, padx=1, pady=5, sticky="W")
         self.e_id_paralelo.focus()
 
@@ -249,22 +251,19 @@ class Paralelo:
         self.e_dia["values"] = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"]
         self.e_dia.grid(column=1, row=4, padx=0, pady=5, sticky="W")
 
-        try:
-            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_paralelo_database.get_database())
+        self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20', font=('Copperplate Gothic Bold', 10),
+                                  bg='#808080')
+        self.l_h_paralelo.grid(column=0, row=5, padx=1, pady=5)
+        self.e_hora = ttk.Combobox(self.Manage_Frame_par, textvariable=self.e_hora_1, width='15',
+                                   font=("Arial", 9, "bold"), state="readonly")
+        self.e_hora["values"] = ["08:00:00--11:00:00", "08:30:00--11:30:00", "09:00:00--12:00:00", "09:30:00--12:30:00",
+                                 "10:00:00--13:00:00", "10:30:00--13:30:00", "11:00:00--14:00:00", "11:30:00--14:30:00",
+                                 "12:00:00--15:00:00", "12:30:00--15:30:00", "13:00:00--16:00:00", "13:30:00--16:30:00",
+                                 "14:00:00--17:00:00", "14:30:00--17:30:00", "15:00:00--18:00:00", "15:30:00--18:30:00",
+                                 "16:00:00--19:00:00", "16:30:00--19:30:00"]
+        self.e_hora.grid(column=1, row=5, padx=0, pady=5, sticky="W")
 
-            query = "select * from horas"
-            hora_tuple = self.db_connection.select(query)
-
-            self.horas_list = []
-            for i in hora_tuple:
-                hora = i[1]
-                self.horas_list.append(hora)
-
-        except BaseException as msg:
-            print(msg)
-
-        self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20',
+        """self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20',
                                   font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_h_paralelo.grid(column=0, row=5, padx=1, pady=5)
         self.e_hora = ttk.Combobox(self.Manage_Frame_par, textvariable=self.e_hora_1, width='15',
@@ -273,7 +272,7 @@ class Paralelo:
         self.e_hora.grid(column=1, row=5, padx=0, pady=5, sticky="W")
 
         self.frame_add_h = Frame(self.Manage_Frame_par, bg='#0d1e24')
-        self.frame_add_h.place(x=310, y=187, width=200)
+        self.frame_add_h.place(x=310, y=187, width=200)"""
 
         self.l_f_i_par = Label(self.Manage_Frame_par, text='FECHA INICIO', width='20',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
@@ -325,7 +324,7 @@ class Paralelo:
         self.clean_par_btn.image = imagenes['limpiar']
         self.clean_par_btn.grid(row=0, column=3, padx=15, pady=10)
 
-        # Manage Frame hora y día
+        """# Manage Frame hora y día
         self.Manage_Frame_h_d = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
         self.Manage_Frame_h_d.place(x=15, y=490, width=500, height=200)
 
@@ -364,7 +363,7 @@ class Paralelo:
         self.add_hora_btn = Button(self.Manage_Frame_h_d_1, image=imagenes['nuevo'], text='AÑADIR',
                                    command=self.add_hora, compound="right")
         self.add_hora_btn.image = imagenes['nuevo']
-        self.add_hora_btn.place(x=300, y=20)
+        self.add_hora_btn.place(x=300, y=20)"""
 
         # Detail Frame
         self.Detail_Frame_par = Frame(self.root, bd=4, relief=RIDGE, bg='#a27114')
@@ -459,25 +458,6 @@ class Paralelo:
         except BaseException as msg:
             print(msg)
 
-    def add_hora(self):
-        if self.e_n_hora_e == "" or self.e_n_hora_s == "":
-            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
-        else:
-            self.hora_e_s = (self.e_n_hora_e.get() + "-" + self.e_hora_s.get())
-            try:
-                obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
-                self.db_connection.create(obj_paralelo_database.get_database())
-
-                query = 'insert into horas (hora) values (%s);'
-                values = self.hora_e_s
-                self.db_connection.insert(query, values)
-                self.e_hora.set("")
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"HORA: {values[1]}\n "
-                                                           f"REGISTRADO CORRECTAMENTE")
-
-            except BaseException as msg:
-                messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA HORA DE ENTRADA Y SALIDA: {msg}")
-
     def pick_date_i(self, event):
         """
             left click event is being handled when trying to add DOB
@@ -566,7 +546,7 @@ class Paralelo:
                                  f"NO FUÉ POSIBLE CONECTARSE CON EL SERVIDOR,\n"
                                  f"REVISE LA CONEXIÓN: {msg}")
 
-        if self.e_id_paralelo == '' or self.e_nombre_curso == '' or self.e_nom_par.get() == '' or \
+        if self.e_nombre_curso == '' or self.e_nom_par.get() == '' or \
                 self.e_dia.get() == '' or self.e_hora.get() == '' or self.e_f_i_par == '' or \
                 self.e_f_f_par.get() == '' or self.e_dur_par.get() == '':
             messagebox.showerror("SYST_CONTROL(IFAP®)-->ERROR", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
@@ -582,9 +562,9 @@ class Paralelo:
         try:
             obj_paralelos_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_paralelos_database.get_database())
-            query = 'insert into paralelos (id_paralelo, nombre_curso, nombre_paralelo, dia, hora, ' \
-                    'fecha_inicio, fecha_fin, duracion) values (%s, %s, %s, %s, %s, %s, %s, %s);'
-            values = (self.e_id_paralelo.get(), self.e_nombre_curso.get(), self.e_nom_par.get(), self.e_dia.get(),
+            query = 'insert into paralelos (nombre_curso, nombre_paralelo, dia, hora, fecha_inicio, fecha_fin, ' \
+                    'duracion) values (%s, %s, %s, %s, %s, %s, %s);'
+            values = (self.e_nombre_curso.get(), self.e_nom_par.get(), self.e_dia.get(),
                       self.e_hora.get(), self.e_f_i_par.get(), self.e_f_f_par.get(), self.e_dur_par.get()
                       )
             self.db_connection.insert(query, values)
@@ -618,7 +598,7 @@ class Paralelo:
         self.content = self.Table_par.item(self.cursor_row)
         row_p = self.content['values']
 
-        self.e_id_paralelo_1.set(row_p[0])
+        self.e_id_paralelo_1.set(str(row_p[0]))
         self.e_nombre_curso_1.set(row_p[1])
         self.e_nom_par_1.set(row_p[2])
         self.e_dia_1.set(row_p[3])

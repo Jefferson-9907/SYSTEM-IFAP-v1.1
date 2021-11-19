@@ -119,12 +119,12 @@ class Users:
         self.root.config(menu=self.menus)
 
         # =============================================================
-        # CREACIÓN DEL DE MENÚ AYUDA
+        # CREACIÓN DEL DE MENÚ USUARIOS
         # =============================================================
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
         self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
-
+        self.Column7.add_command(label='Usuarios', command=self.users_btn)
         self.Column7.add_separator()
         self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
         self.Column7.add_separator()

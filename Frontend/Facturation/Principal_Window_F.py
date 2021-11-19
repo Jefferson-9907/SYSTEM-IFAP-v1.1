@@ -1,7 +1,12 @@
 # Import Modules
+import random
 from _datetime import datetime
+from time import strftime
 from tkinter import *
 from tkinter import messagebox
+
+import Frontend.login_form
+from Frontend.Facturation import Re_Facturation, Facturation_Window_F
 
 
 class Principal_F:
@@ -11,26 +16,30 @@ class Principal_F:
         self.root.title("SYST_CONTROL--›Principal")
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
-        self.root.iconbitmap('../recursos/ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
 
-        self.barra1 = Label(self.root)
-        self.barra1.config(bg='black', padx=681, pady=20)
-        self.barra1.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.barra2 = Label(self.root)
-        self.barra2.config(bg="#a27114", padx=681, pady=10)
-        self.barra2.grid(row=0, column=0, sticky='w', padx=0, pady=0)
+        imagenes = {
+            'fondo': PhotoImage(file='recursos\\FONDO_PRINCIPAL1.png'),
+        }
 
-        self.txt = "SYSTEM CONTROL (INICIO)"
+        # =============================================================
+        # FONDO PANTALLA PRINCIPAL
+        # =============================================================
+        self.fondo = Label(self.root, image=imagenes['fondo'], bg="#003366", fg='White',
+                           font=("Cooper Black", 12), compound="left")
+        self.fondo.image = imagenes['fondo']
+        self.fondo.place(x=0, y=0)
+
+        self.txt = "SYSTEM CONTROL IFAP (INICIO)"
         self.count = 0
         self.text = ''
         self.color = ["#4f4e4d", "#f29844", "red2"]
         self.heading = Label(self.root, text=self.txt, font=("Cooper Black", 35), bg="#000000",
                              fg='black', bd=5, relief=FLAT)
-        self.heading.place(x=0, y=0, width=450)
+        self.heading.place(x=0, y=0, width=1367)
 
-        """self.texto1 = Label(self.root, text='SYSTEM CONTROL (INICIO)')
-        self.texto1.config(font=("Britannic", 20, "bold"), fg='black', bg="#a27114")
-        self.texto1.grid(row=0, column=0, sticky='w', padx=455, pady=0)"""
+        self.slider()
+        self.heading_color()
 
         # =============================================================
         # CREACIÓN DE LA BARRA DE MENÚ
@@ -49,7 +58,8 @@ class Principal_F:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column1)
-        self.Column1.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column1.add_command(label='Menú Facturación', command=self.factura_btn)
+        self.Column1.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column2 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -73,43 +83,80 @@ class Principal_F:
         self.Column3.add_separator()
         self.root.config(menu=self.menus)
 
-        data = datetime.now()
-        fomato_f = " %A %d/%B/%Y   %H:%M:%S %p "
-        self.footer = Label(self.root, text='  FECHA Y HORA DE INGRESO: ', font=("Cooper Black", 10), bg='Honeydew2',
-                            relief=RIDGE)
-        self.footer.place(x=0, y=703)
-        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10),
-                              bg='Honeydew2',
-                              relief=RIDGE)
-        self.footer_1.place(x=212, y=704)
-
         self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
                               fg='white')
         self.footer_4.place(x=0, y=725)
 
+        data = datetime.now()
+        fomato_f = " %A %d/%B/%Y"
+
+        self.footer = Label(self.root, text='  FECHA Y HORA: ', font=("Cooper Black", 9), bg='black',
+                            fg='white')
+        self.footer.place(x=930, y=725)
+        self.footer_1 = Label(self.root, text=str(data.strftime(fomato_f)), font=("Lucida Console", 10), bg='black',
+                              fg='white')
+        self.footer_1.place(x=1040, y=727)
+
+        self.clock = Label(self.root)
+        self.clock['text'] = '00:00:00'
+        self.clock['font'] = 'Tahoma 9 bold'
+        self.clock['bg'] = 'black'
+        self.clock['fg'] = 'white'
+        self.clock.place(x=1275, y=725)
+        self.tic()
+        self.tac()
+
+    def tic(self):
+        self.clock["text"] = strftime("%H:%M:%S %p")
+
+    def tac(self):
+        self.tic()
+        self.clock.after(1000, self.tac)
+
+    def slider(self):
+        """creates slides for heading by taking the text,
+        and that text are called after every 100 ms"""
+        if self.count >= len(self.txt):
+            self.count = -1
+            self.text = ''
+            self.heading.config(text=self.text)
+
+        else:
+            self.text = self.text + self.txt[self.count]
+            self.heading.config(text=self.text)
+        self.count += 1
+
+        self.heading.after(100, self.slider)
+
+    def heading_color(self):
+        """
+            configures heading label
+            :return: every 50 ms returned new random color.
+        """
+        fg = random.choice(self.color)
+        self.heading.config(fg=fg)
+        self.heading.after(50, self.heading_color)
+
     def logout(self):
-        self.root.destroy()
+        root = Toplevel()
+        Frontend.login_form.Login(root)
+        self.root.withdraw()
+        root.deiconify()
 
-        from Frontend.login_form import Login
-        st_root = Tk()
-        Login(st_root)
-        st_root.mainloop()
+    def factura_btn(self):
+        root = Toplevel()
+        Facturation_Window_F.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
 
-    def facturation_btn(self):
-        self.root.destroy()
-
-        from Frontend.Administrador.Facturation_Window_A import Ventana_Principal
-        st_root = Tk()
-        Ventana_Principal(st_root)
-        st_root.mainloop()
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def pass_btn(self):
-        self.root.destroy()
-
-        from Frontend.Facturacion.Password_Window_F import Password_F
-        st_root = Tk()
-        Password_F(st_root)
-        st_root.mainloop()
+        pass
 
     def salir_principal(self):
         self.sa = messagebox.askyesno('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')
@@ -123,7 +170,7 @@ class Principal_F:
         self.men2 = messagebox.showinfo('SIST_CONTROL (IFAP®)',
                                         'SIST_CONTROL (IFAP®) v2.0\n'
                                         'El uso de este software queda sujeto a los términos y condiciones del '
-                                        'contrato "BJM DESING®-CLIENTE".    \n'
+                                        'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
                                         'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')

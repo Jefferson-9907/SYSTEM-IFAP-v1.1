@@ -218,6 +218,20 @@ class Login:
                 values = userpassword
                 data = self.db_connection.search(query, (values,))
 
+                self.f_username = []
+                self.f_password = []
+                self.f_email = []
+                for values in data:
+                    current_list = values[2]
+                    f_username_list = values[1]
+                    f_password_list = values[3]
+                    f_email_list = values[2]
+                    self.f_email.append(f_email_list)
+                    self.f_username.append(f_username_list)
+                    self.f_password.append(f_password_list)
+                    Login.current_user.clear()
+                    Login.current_user.append(current_list)
+
                 if data:
                     self.accion = "INGRESO (USUARIO ADMIN)"
                     query = "select * from usuarios where usuario=%s AND contrasena=%s AND tipo=%s;"
@@ -226,10 +240,10 @@ class Login:
 
                     if data:
                         messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", f"REGISTRO DE INGRESO (USUARIO)\n"
-                                                                   f"USUARIO: {self.username_entry.get()}\n"
-                                                                   f"ACCIÓN: {self.accion}\n"
-                                                                   f"FECHA: {self.fecha}\n"
-                                                                   f"HORA: {self.hora}")
+                                                                             f"USUARIO: {self.username_entry.get()}\n"
+                                                                             f"ACCIÓN: {self.accion}\n"
+                                                                             f"FECHA: {self.fecha}\n"
+                                                                             f"HORA: {self.hora}")
                         self.audi_users()
                         root = Toplevel()
                         Principal(root)
@@ -262,10 +276,10 @@ class Login:
 
                             if data:
                                 messagebox.showinfo("SYST_CONTROL(IFAP®)-->(ÉXITO)", f"REGISTRO DE INGRESO (USUARIO)\n"
-                                                                           f"USUARIO: {self.username_entry.get()}\n"
-                                                                           f"ACCIÓN: {self.accion}\n"
-                                                                           f"FECHA: {self.fecha}\n"
-                                                                           f"HORA: {self.hora}")
+                                                                                     f"USUARIO: {self.username_entry.get()}\n"
+                                                                                     f"ACCIÓN: {self.accion}\n"
+                                                                                     f"FECHA: {self.fecha}\n"
+                                                                                     f"HORA: {self.hora}")
                                 self.audi_users()
                                 root = Toplevel()
                                 Principal_F(root)
@@ -321,6 +335,12 @@ class Login:
                 Frontend.connect_database.ConnectDatabase(root)
                 self.root.withdraw()
                 root.deiconify()
+
+    def login_success(self):
+        """after successful login new admin dashboard will open by fetching the current logged in user"""
+        root = Toplevel()
+        self.root.withdraw()
+        root.deiconify()
 
 
 def win():

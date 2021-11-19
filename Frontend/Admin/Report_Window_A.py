@@ -3,7 +3,7 @@ import random
 from _datetime import datetime
 from time import strftime
 from tkinter import *
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 
 import Frontend.Admin.Principal_Window_A
 import Frontend.login_form
@@ -17,6 +17,14 @@ import Frontend.Admin.Facturation_Window_A
 import Frontend.Admin.Password_Window_A
 import Frontend.Admin.Users_Window_A
 
+from Frontend.Admin.Report_al import generarReporte_al
+from Frontend.Admin.Report_as import generarReporte_as
+from Frontend.Admin.Report_cs import generarReporte_cs
+from Frontend.Admin.Report_pa import generarReporte_pa
+from Frontend.Admin.Report_a_us import generarReporte_us
+
+
+
 
 class Reports:
 
@@ -26,6 +34,7 @@ class Reports:
         self.root.attributes('-fullscreen', True)
         self.root.resizable(False, False)
         self.root.iconbitmap('recursos\\ICONO_SIST_CONTROL (IFAP®)2.0.ico')
+        self.root.configure(bg='#a27114')
 
         imagenes = {
             'nuevo': PhotoImage(file='recursos\\icon_export.png'),
@@ -42,16 +51,6 @@ class Reports:
         self.slider()
         self.heading_color()
 
-        self.barra1 = Label(self.root)
-        self.barra1.config(bg='black', padx=681, pady=20)
-        self.barra1.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.barra2 = Label(self.root)
-        self.barra2.config(bg="#a27114", padx=681, pady=10)
-        self.barra2.grid(row=0, column=0, sticky='w', padx=0, pady=0)
-        self.texto1 = Label(self.root, text='SYSTEM CONTROL (REPORTES)')
-        self.texto1.config(font=("Britannic", 20, "bold"), fg='black', bg="#a27114")
-        self.texto1.grid(row=0, column=0, sticky='w', padx=455, pady=0)
-
         # =============================================================
         # CREACIÓN DE LA BARRA DE MENÚ
         # =============================================================
@@ -64,8 +63,6 @@ class Reports:
         self.root.config(menu=self.menubarra)
         self.menus = Menu(self.root)
         self.Column1 = Menu(self.menus, tearoff=0)
-        self.cuaderno = ttk.Notebook(self.root, width=1340, height=625)
-        self.cuaderno.grid(row=1, column=0, sticky='nw', padx=10, pady=5)
 
         # =============================================================
         # AÑADIENDO OPCIONES AL MENÚ PRINCIPAL
@@ -121,6 +118,7 @@ class Reports:
         self.menus.add_cascade(label='USUARIOS', menu=self.Column7)
         self.Column7.add_command(label='Cambiar Usuario', command=self.logout)
         self.Column7.add_command(label='Cambiar Contraseña', command=self.pass_btn)
+        self.Column7.add_command(label='Usuarios', command=self.users_btn)
         self.Column7.add_separator()
         self.Column7.add_command(label='Cerrar Sesión', command=self.salir_principal)
         self.Column7.add_separator()
@@ -160,30 +158,76 @@ class Reports:
         self.tic()
         self.tac()
 
-        self.Manage_Frame_report = Frame(self.root, relief=RIDGE, bd=4, bg='#0d1e24')
-        self.Manage_Frame_report.place(x=25, y=75, width=1310, height=605)
+        self.Manage_Frame_report = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
+        self.Manage_Frame_report.place(x=15, y=75, width=1330, height=640)
 
         m_title_p = Label(self.Manage_Frame_report, text="-ADMINISTAR REPORTES-",
-                          font=("Copperplate Gothic Bold", 16, "bold"), bg='#0d1e24', fg="White")
+                          font=("Copperplate Gothic Bold", 16, "bold"), bg='#a27114', fg="White")
         m_title_p.grid(column=0, row=0, columnspan=2, padx=485, pady=10)
 
         # Button Frame
-        self.btn_frame_report = Frame(self.Manage_Frame_report, bg='#0d1e24')
-        self.btn_frame_report.place(x=25, y=75, width=450)
+        self.btn_frame_report = Frame(self.Manage_Frame_report, bg='#a27114')
+        self.btn_frame_report.place(x=25, y=75, width=1000)
 
-        self.l_gen_report = Label(self.btn_frame_report, text='REPORTE GENERAL DE ESTUDIANTES', width='40',
-                                  font=("Britannic", 11, "bold"), bg='#808080')
-        self.l_gen_report.grid(row=0, column=0, padx=1, pady=5, sticky="W")
+        self.l_gen_report_s = Label(self.btn_frame_report, text='REPORTE GENERAL DE ESTUDIANTES', width='40',
+                                    font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_s.grid(row=0, column=0, padx=1, pady=5, sticky="W")
 
-        self.gen_report_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
-                                     text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"))
-        self.gen_report_btn.image = imagenes['nuevo']
-        self.gen_report_btn.grid(row=0, column=1, padx=15, pady=10, sticky="E")
+        self.gen_report_s_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_st)
+        self.gen_report_s_btn.image = imagenes['nuevo']
+        self.gen_report_s_btn.grid(row=0, column=1, padx=15, pady=10, sticky="W")
 
-        self.gen_report_btn1 = Button(self.btn_frame_report, image=imagenes['nuevo'],
-                                      text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"))
-        self.gen_report_btn1.image = imagenes['nuevo']
-        self.gen_report_btn1.grid(row=1, column=0, padx=15, pady=10, sticky="W")
+        self.l_gen_report_m = Label(self.btn_frame_report, text='REPORTE GENERAL DE MATRÍCULAS', width='40',
+                                    font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_m.grid(row=1, column=0, padx=1, pady=5, sticky="W")
+
+        self.gen_report_m_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_mt)
+        self.gen_report_m_btn.image = imagenes['nuevo']
+        self.gen_report_m_btn.grid(row=1, column=1, padx=15, pady=10, sticky="W")
+
+        self.l_gen_report_a = Label(self.btn_frame_report, text='REPORTE GENERAL DE ASESORES', width='40',
+                                    font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_a.grid(row=2, column=0, padx=1, pady=5, sticky="W")
+
+        self.gen_report_a_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_as)
+        self.gen_report_a_btn.image = imagenes['nuevo']
+        self.gen_report_a_btn.grid(row=2, column=1, padx=15, pady=10, sticky="W")
+
+        self.l_gen_report_c = Label(self.btn_frame_report, text='REPORTE GENERAL DE CURSOS   ', width='40',
+                                    font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_c.grid(row=3, column=0, padx=1, pady=5, sticky="W")
+
+        self.gen_report_c_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_cs)
+        self.gen_report_c_btn.image = imagenes['nuevo']
+        self.gen_report_c_btn.grid(row=3, column=1, padx=15, pady=10, sticky="W")
+
+        self.l_gen_report_p = Label(self.btn_frame_report, text='REPORTE GENERAL DE PARALELOS ', width='40',
+                                    font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_p.grid(row=4, column=0, padx=1, pady=5, sticky="W")
+
+        self.gen_report_p_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_pa)
+        self.gen_report_p_btn.image = imagenes['nuevo']
+        self.gen_report_p_btn.grid(row=4, column=1, padx=15, pady=10, sticky="W")
+
+        self.l_gen_report_p = Label(self.btn_frame_report, text='REPORTE GENERAL DE USUARIOS ', width='40',
+                                   font=("Britannic", 11, "bold"), bg='#808080')
+        self.l_gen_report_p.grid(row=5, column=0, padx=1, pady=5, sticky="W")
+
+        self.gen_report_p_btn = Button(self.btn_frame_report, image=imagenes['nuevo'],
+                                       text='Generar', width=80, compound="right", font=("Britannic", 11, "bold"),
+                                       command=self.report_us)
+        self.gen_report_p_btn.image = imagenes['nuevo']
+        self.gen_report_p_btn.grid(row=5, column=1, padx=15, pady=10, sticky="W")
 
     def tic(self):
         self.clock["text"] = strftime("%H:%M:%S %p")
@@ -206,6 +250,24 @@ class Reports:
         self.count += 1
 
         self.heading.after(100, self.slider)
+
+    def report_st(self):
+        generarReporte_al()
+
+    def report_mt(self):
+        pass
+
+    def report_as(self):
+        generarReporte_as()
+
+    def report_cs(self):
+        generarReporte_cs()
+
+    def report_pa(self):
+        generarReporte_pa()
+
+    def report_us(self):
+        generarReporte_us()
 
     def heading_color(self):
         """

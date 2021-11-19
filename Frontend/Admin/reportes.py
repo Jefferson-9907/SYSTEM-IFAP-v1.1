@@ -2,63 +2,51 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
-from reportlab.lib.colors import black
-
-import Backend.connection
 import os
 
 
-class ReciboFactura:
-    """Objeto para crear un recibo asociado a una factura"""
+class ReciboFactura():
+    '''Objeto para crear un recibo asociado a una factura'''
 
     def __init__(self):
-        """
-            Inicializa el titulo de la factura
-        """
-
         self.titulo = 'Factura.pdf'
         self.factura = canvas.Canvas(self.titulo, pagesize=A4)
 
-        # ======================Backend connection=============
-        self.db_connection = Backend.connection.DatabaseConnection()
-
     def crear_esqueleto(self):
         _, h = A4
-        # ORIGINAL
-        self.factura.line(x1=20, x2=580, y1=h - 125, y2=h - 125)
-        self.factura.setFont("Times-Roman", 11)
-        self.factura.drawString(20, h - 135, 'NOMBRE:')
-        self.factura.drawString(20, h - 150, 'No. CÉDULA:')
-        self.factura.drawString(20, h - 165, 'DIRECCIÓN:')
-        self.factura.drawString(20, h - 180, 'FECHA EMISIÓN:')
-        self.factura.line(x1=20, x2=580, y1=h - 190, y2=h - 190)
-        self.factura.drawString(235, h - 200, "DETALLE DE LA FACTURA")
+        self.factura
+        self.factura.drawString(240, h - 50, "FACTURA")
+        self.factura.line(x1=20, x2=580, y1=h - 70, y2=h - 70)
 
-        # CLIENTE
-        self.factura.line(x1=20, x2=580, y1=h - 580, y2=h - 580)
-        self.factura.setFont("Times-Roman", 11)
-        self.factura.drawString(20, h - 590, 'NOMBRE:')
-        self.factura.drawString(20, h - 605, 'No. CÉDULA:')
-        self.factura.drawString(20, h - 620, 'DIRECCIÓN:')
-        self.factura.drawString(20, h - 635, 'FECHA EMISIÓN:')
-        self.factura.line(x1=20, x2=580, y1=h - 645, y2=h - 645)
-        self.factura.drawString(235, h - 655, "DETALLE DE LA FACTURA")
+        self.factura.drawString(60, h - 100,
+                                'Id Factura : '
+                                )
+        self.factura.drawString(420, h - 100,
+                                'Fecha : '
+                                )
+        self.factura.drawString(60, h - 140,
+                                'Nombre del Cliente :'
+                                )
+
+        self.factura.drawString(220, h - 200, "Detalle de la factura")
+        self.factura.line(x1=20, x2=580, y1=h - 210, y2=h - 210)
 
     def dibujar_tabla(self, lista_productos):
         _, h = A4
         centinela = 0
-        data = [[' Cod.', '                                           Implemento', 'Cant.', 'Precio', 'Subtotal'],
+        data = [[' Codigo', 'Producto', 'Cantidad', 'Precio', 'Subtotal'],
                 ]
         for productos in lista_productos:
-            lista = [str(productos.id),
-                     str(productos.descripcion),
-                     str(productos.cantidad),
-                     str(productos.precio),
-                     str(productos.sub_total)]
+            lista = []
+            lista.append(str(productos.id))
+            lista.append(str(productos.nombre))
+            lista.append(str(productos.cantidad))
+            lista.append(str(productos.precio_venta))
+            lista.append(str(productos.sub_total))
             data.append(lista)
             centinela = centinela + 20
 
-        table = Table(data, colWidths=[50, 360, 50, 50, 50], )
+        table = Table(data, colWidths=[100, 180, 50, 80, 100], )
         table.setStyle(TableStyle(
             [
                 ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
@@ -66,19 +54,19 @@ class ReciboFactura:
             ])
         )
 
-        punto_separacion = h - 150 - centinela
+        punto_separacion = h - 260 - centinela
         table.wrapOn(self.factura, 100, 100)
-        table.drawOn(self.factura, x=20, y=h - 220 - centinela)
-        table.drawOn(self.factura, x=20, y=h - 675 - centinela)
+        table.drawOn(self.factura, x=50, y=h - 260 - centinela)
 
-        self.factura.drawString(500, punto_separacion - 85, 'Total: ')
-        self.factura.drawString(500, punto_separacion - 105, 'Pago: ')
-        self.factura.drawString(490, punto_separacion - 125, 'Cambio: ')
-
-        self.factura.drawString(500, punto_separacion - 540, 'Total: ')
-        self.factura.drawString(500, punto_separacion - 560, 'Pago: ')
-        self.factura.drawString(490, punto_separacion - 580, 'Cambio: ')
-
+        self.factura.drawString(430, punto_separacion - 20,
+                                'Total : '
+                                )
+        self.factura.drawString(430, punto_separacion - 40,
+                                'Pago : '
+                                )
+        self.factura.drawString(418, punto_separacion - 60,
+                                'Cambio : '
+                                )
         return punto_separacion
 
     def detalles_factura(self, object):
@@ -89,28 +77,22 @@ class ReciboFactura:
 
     def llenar_factura(self, object, punto):
         w, h = A4
-        self.factura.setFont("Times-Roman", 11)
-        self.factura.setFillColor(black)
-        self.factura.drawString(110, h - 135, str(object.nom_ape_al))
-        self.factura.drawString(110, h - 150, str(object.n_c_al))
-        self.factura.drawString(110, h - 165, str(object.dir_al))
-        self.factura.drawString(110, h - 180, str(object.fecha_creacion))
-        self.factura.drawString(175, h - 180, str(object.hora))
 
-        self.factura.drawString(540, punto - 85, str(object.total))
-        self.factura.drawString(540, punto - 105, str(object.pago))
-        self.factura.drawString(540, punto - 125, str(object.cambio))
-
-        self.factura.setFillColor(black)
-        self.factura.drawString(110, h - 590, str(object.nom_ape_al))
-        self.factura.drawString(110, h - 605, str(object.n_c_al))
-        self.factura.drawString(110, h - 620, str(object.dir_al))
-        self.factura.drawString(110, h - 635, str(object.fecha_creacion))
-        self.factura.drawString(175, h - 635, str(object.hora))
-
-        self.factura.drawString(540, punto - 540, str(object.total))
-        self.factura.drawString(540, punto - 560, str(object.pago))
-        self.factura.drawString(540, punto - 580, str(object.cambio))
+        self.factura.drawString(140, h - 100,
+                                str(object.id_factura)
+                                )
+        self.factura.drawString(180, h - 140,
+                                str(object.id_cliente)
+                                )
+        self.factura.drawString(480, punto - 20,
+                                str(object.total)
+                                )
+        self.factura.drawString(480, punto - 40,
+                                str(object.pago)
+                                )
+        self.factura.drawString(480, punto - 60,
+                                str(object.cambio)
+                                )
 
     def save(self):
         self.factura.showPage()

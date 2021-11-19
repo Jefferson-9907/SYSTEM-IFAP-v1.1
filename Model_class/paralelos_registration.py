@@ -4,8 +4,7 @@ class ParaleloRegistration:
         establecer todos los datos en la tabla de la base de datos backend llamada Course_Window
     """
 
-    def __init__(self, id_paralelo, nombre_cur, nombre_par, dia, hora, f_ini, f_fin, duracion):
-        self.__id_paralelo = id_paralelo
+    def __init__(self, nombre_cur, nombre_par, dia, hora, f_ini, f_fin, duracion):
         self.__nombre_cur = nombre_cur
         self.__nombre_par = nombre_par
         self.__dia = dia
@@ -15,8 +14,6 @@ class ParaleloRegistration:
         self.__duracion = duracion
 
     # ===========================set methods=======================
-    def set_id_paralelo(self, id_paralelo):
-        self.__id_paralelo = id_paralelo
 
     def set_nombre_cur(self, nombre_cur):
         self.__nombre_cur = nombre_cur
@@ -40,8 +37,6 @@ class ParaleloRegistration:
         self.__dia = duracion
 
     # =====================get methods========================
-    def get_id_paralelo(self):
-        return self.__id_paralelo
 
     def get_nombre_cur(self):
         return self.__nombre_cur

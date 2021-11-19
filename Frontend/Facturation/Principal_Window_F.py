@@ -6,7 +6,7 @@ from tkinter import *
 from tkinter import messagebox
 
 import Frontend.login_form
-from Frontend.Facturation import Re_Facturation, Facturation_Window_F
+from Frontend.Facturation import Re_Facturation, Facturation_Window_F, Password_Window_F
 
 
 class Principal_F:
@@ -58,7 +58,7 @@ class Principal_F:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column1)
-        self.Column1.add_command(label='Menú Facturación', command=self.factura_btn)
+        self.Column1.add_command(label='Facturación', command=self.factura_btn)
         self.Column1.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column2 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
@@ -156,7 +156,10 @@ class Principal_F:
         root.deiconify()
 
     def pass_btn(self):
-        pass
+        root = Toplevel()
+        Password_Window_F.Password(root)
+        self.root.withdraw()
+        root.deiconify()
 
     def salir_principal(self):
         self.sa = messagebox.askyesno('CERRAR SESIÓN', 'CERRAR SYST_CONTROL(IFAP®)')

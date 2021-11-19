@@ -17,11 +17,11 @@ import Frontend.Admin.Student_Window_A
 import Frontend.Admin.Matricula_Window_A
 import Frontend.Admin.Assesor_Window_A
 import Frontend.Admin.Course_Window_A
-import Frontend.Admin.Implements_Window_A
 import Frontend.Admin.Facturation_Window_A
 import Frontend.Admin.Report_Window_A
 import Frontend.Admin.Password_Window_A
 import Frontend.Admin.Users_Window_A
+from Frontend.Admin import Re_Facturation
 
 
 class Paralelo:
@@ -107,7 +107,6 @@ class Paralelo:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos', command=self.courses_btn)
         self.Column4.add_command(label='Paralelos')
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -115,7 +114,8 @@ class Paralelo:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -191,7 +191,7 @@ class Paralelo:
         self.search_field_par = StringVar()
 
         try:
-            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use COMDELFINA;')
+            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
             self.db_connection.create(obj_paralelo_database.get_database())
 
             query = "SELECT isnull(max(id_paralelo+1), 1) FROM paralelos"
@@ -263,17 +263,6 @@ class Paralelo:
                                  "16:00:00--19:00:00", "16:30:00--19:30:00"]
         self.e_hora.grid(column=1, row=5, padx=0, pady=5, sticky="W")
 
-        """self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20',
-                                  font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_h_paralelo.grid(column=0, row=5, padx=1, pady=5)
-        self.e_hora = ttk.Combobox(self.Manage_Frame_par, textvariable=self.e_hora_1, width='15',
-                                   font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora['values'] = self.horas_list
-        self.e_hora.grid(column=1, row=5, padx=0, pady=5, sticky="W")
-
-        self.frame_add_h = Frame(self.Manage_Frame_par, bg='#0d1e24')
-        self.frame_add_h.place(x=310, y=187, width=200)"""
-
         self.l_f_i_par = Label(self.Manage_Frame_par, text='FECHA INICIO', width='20',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_f_i_par.grid(column=0, row=6, padx=0, pady=5)
@@ -323,47 +312,6 @@ class Paralelo:
                                     command=self.clear_field_par, compound=TOP)
         self.clean_par_btn.image = imagenes['limpiar']
         self.clean_par_btn.grid(row=0, column=3, padx=15, pady=10)
-
-        """# Manage Frame hora y día
-        self.Manage_Frame_h_d = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
-        self.Manage_Frame_h_d.place(x=15, y=490, width=500, height=200)
-
-        m_title_d_h = Label(self.Manage_Frame_h_d, text="-ADMINISTAR HORAS-",
-                            font=("Copperplate Gothic Bold", 16, "bold"), bg='#a27114', fg="White")
-        m_title_d_h.grid(row=0, columnspan=1, padx=110, pady=10)
-
-        self.e_n_hora_e = StringVar()
-        self.e_n_hora_s = StringVar()
-
-        self.Manage_Frame_h_d_1 = Frame(self.Manage_Frame_h_d, bd=4, bg='#a27114')
-        self.Manage_Frame_h_d_1.place(x=30, y=50, width=450, height=100)
-
-        self.l_hora_e = Label(self.Manage_Frame_h_d_1, text='HORA ENTRADA', width='15',
-                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_hora_e.grid(column=0, row=1, padx=5, pady=5)
-        self.e_hora_e = ttk.Combobox(self.Manage_Frame_h_d_1, textvariable=self.e_n_hora_e, width='15',
-                                     font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora_e["values"] = ["08:00:00", "08:30:00", "09:00:00", "09:30:00", "10:00:00", "10:30:00",
-                                   "11:00:00", "11:30:00", "12:00:00", "12:30:00", "13:00:00", "13:30:00",
-                                   "14:00:00", "14:30:00", "15:00:00", "15:30:00", "16:00:00", "16:30:00",
-                                   "17:00:00", "17:30:00", "18:00:00", "18:30:00", "19:00:00", "19:30:00"]
-        self.e_hora_e.grid(column=1, row=1, padx=5, pady=5, sticky="W")
-
-        self.l_hora_s = Label(self.Manage_Frame_h_d_1, text='HORA SALIDA', width='15',
-                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_hora_s.grid(column=0, row=2, padx=5, pady=5)
-        self.e_hora_s = ttk.Combobox(self.Manage_Frame_h_d_1, textvariable=self.e_n_hora_s, width='15',
-                                     font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora_s["values"] = ["08:00:00", "08:30:00", "09:00:00", "09:30:00", "10:00:00", "10:30:00",
-                                   "11:00:00", "11:30:00", "12:00:00", "12:30:00", "13:00:00", "13:30:00",
-                                   "14:00:00", "14:30:00", "15:00:00", "15:30:00", "16:00:00", "16:30:00",
-                                   "17:00:00", "17:30:00", "18:00:00", "18:30:00", "19:00:00", "19:30:00"]
-        self.e_hora_s.grid(column=1, row=2, padx=5, pady=5, sticky="W")
-
-        self.add_hora_btn = Button(self.Manage_Frame_h_d_1, image=imagenes['nuevo'], text='AÑADIR',
-                                   command=self.add_hora, compound="right")
-        self.add_hora_btn.image = imagenes['nuevo']
-        self.add_hora_btn.place(x=300, y=20)"""
 
         # Detail Frame
         self.Detail_Frame_par = Frame(self.root, bd=4, relief=RIDGE, bg='#a27114')
@@ -822,15 +770,15 @@ class Paralelo:
         self.root.withdraw()
         root.deiconify()
 
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def facturation_btn(self):
         root = Toplevel()
         Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -867,7 +815,7 @@ class Paralelo:
                                         'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 def root():

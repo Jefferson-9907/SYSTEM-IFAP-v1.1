@@ -15,7 +15,6 @@ import Frontend.Admin.Matricula_Window_A
 import Frontend.Admin.Assesor_Window_A
 import Frontend.Admin.Course_Window_A
 import Frontend.Admin.Paralelo_Window_A
-import Frontend.Admin.Implements_Window_A
 import Frontend.Admin.Facturation_Window_A
 import Frontend.Admin.Report_Window_A
 import Frontend.Admin.Password_Window_A
@@ -114,7 +113,6 @@ class Student:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos', command=self.courses_btn)
         self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -755,12 +753,6 @@ class Student:
         self.root.withdraw()
         root.deiconify()
 
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def facturation_btn(self):
         root = Toplevel()
         Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
@@ -800,7 +792,7 @@ class Student:
                                         'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 def root():

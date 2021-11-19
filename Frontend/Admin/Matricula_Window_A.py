@@ -15,11 +15,11 @@ import Frontend.Admin.Student_Window_A
 import Frontend.Admin.Assesor_Window_A
 import Frontend.Admin.Course_Window_A
 import Frontend.Admin.Paralelo_Window_A
-import Frontend.Admin.Implements_Window_A
 import Frontend.Admin.Facturation_Window_A
 import Frontend.Admin.Report_Window_A
 import Frontend.Admin.Password_Window_A
 import Frontend.Admin.Users_Window_A
+from Frontend.Admin import Re_Facturation
 
 
 class Matricula:
@@ -114,6 +114,7 @@ class Matricula:
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Menú Cursos', command=self.courses_btn)
+        self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -122,6 +123,7 @@ class Matricula:
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
         self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -157,8 +159,6 @@ class Matricula:
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
         self.menus.add_cascade(label='INFO', menu=self.Column9)
-        self.Column9.add_command(label='Sobre IFAP®', command=self.caja_info_ifap)
-        self.Column9.add_separator()
         self.Column9.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
         self.Column9.add_separator()
         self.root.config(menu=self.menus)
@@ -723,15 +723,15 @@ class Matricula:
         self.root.withdraw()
         root.deiconify()
 
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def facturation_btn(self):
         root = Toplevel()
         Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -759,22 +759,16 @@ class Matricula:
             exit()
 
     # =============================================================
-    # FUNCIÓN CAJA DE INFORMACIÓN DEL INSTITUTO(INFO)
-    # =============================================================
-    def caja_info_ifap(self):
-        self.men1 = messagebox.showinfo('SIST_CONTROL (IFAP®)', 'INSTITUTO DE FORMACIÓN ACADEMICA PROEZAS(IFAP®)')
-
-    # =============================================================
     # FUNCIÓN CAJA DE INFORMACIÓN DEL SISTEMA(INFO)
     # =============================================================
     def caja_info_sist(self):
         self.men2 = messagebox.showinfo('SIST_CONTROL (IFAP®)',
                                         'SIST_CONTROL (IFAP®) v2.0\n'
                                         'El uso de este software queda sujeto a los términos y condiciones del '
-                                        'contrato "BJM DESING®-CLIENTE".    \n'
+                                        'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 def root():

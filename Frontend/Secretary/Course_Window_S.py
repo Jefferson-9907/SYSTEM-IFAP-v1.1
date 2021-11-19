@@ -15,7 +15,6 @@ import Frontend.Secretary.Student_Window_S
 import Frontend.Secretary.Matricula_Window_S
 import Frontend.Secretary.Assesor_Window_S
 import Frontend.Secretary.Paralelo_Window_S
-import Frontend.Secretary.Implements_Window_S
 import Frontend.Secretary.Password_Window_S
 
 
@@ -101,7 +100,6 @@ class Course_S:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos')
         self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -162,29 +160,12 @@ class Course_S:
         self.costo_mensual = DoubleVar()
         self.search_field_curso = StringVar()
 
-        try:
-            obj_courses_database = Model_class.course_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_courses_database.get_database())
-
-            query = "SELECT isnull(max(id_curso+1), 1) FROM cursos"
-            id_tuple = self.db_connection.select(query)
-
-            self.id_list = []
-            for i in id_tuple:
-                id_curso = i[0]
-                self.id_list.append(id_curso)
-
-        except BaseException as msg:
-            print(msg)
-
         self.l_id_curso = Label(self.Manage_Frame_cur, text='ID CURSO', width='18',
                                 font=('Copperplate Gothic Bold', 10),
                                 bg='#808080')
         self.l_id_curso.grid(column=0, row=1, padx=1, pady=5)
-        self.e_id_curso = Entry(self.Manage_Frame_cur, textvariable=self.id_curso, width='10')
+        self.e_id_curso = Entry(self.Manage_Frame_cur, textvariable=self.id_curso, width='10', state='disabled')
         self.e_id_curso.grid(column=1, row=1, padx=1, pady=5, sticky="W")
-        self.e_id_curso.focus()
-        self.id_curso.set(self.id_list)
 
         self.l_n_curso = Label(self.Manage_Frame_cur, text='NOMBRE CURSO', width='18',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
@@ -608,12 +589,6 @@ class Course_S:
     def paralelos_btn(self):
         root = Toplevel()
         Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 

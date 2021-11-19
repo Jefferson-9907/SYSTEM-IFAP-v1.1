@@ -1,25 +1,17 @@
 # Import Modules
 import random
-# Import Modules
-import random
 from _datetime import datetime
 from time import strftime
 from tkinter import *
 from tkinter import messagebox
 
 import Backend.connection
-import Model_class.users_registration
-
 import Frontend.login_form
-import Frontend.Secretary.Principal_Window_S
-import Frontend.Secretary.Student_Window_S
-import Frontend.Secretary.Matricula_Window_S
-import Frontend.Secretary.Assesor_Window_S
-import Frontend.Secretary.Course_Window_S
-import Frontend.Secretary.Paralelo_Window_S
+import Model_class.users_registration
+from Frontend.Facturation import Principal_Window_F, Facturation_Window_F, Re_Facturation
 
 
-class Password_S:
+class Password:
     def __init__(self, root):
         self.root = root
         self.root.title("SYST_CONTROL--›Usuarios")
@@ -29,22 +21,14 @@ class Password_S:
         self.root.configure(bg='#a27114')
 
         imagenes = {
-            'nuevo': PhotoImage(file='recursos\\icon_aceptar.png'),
-            'matricular': PhotoImage(file='recursos\\icon_add.png'),
-            'editar': PhotoImage(file='recursos\\icon_update.png'),
-            'eliminar': PhotoImage(file='recursos\\icon_del.png'),
-            'limpiar': PhotoImage(file='recursos\\icon_clean.png'),
-            'buscar': PhotoImage(file='recursos\\icon_buscar.png'),
-            'todo': PhotoImage(file='recursos\\icon_ver_todo.png'),
-            'actualizar': PhotoImage(file='recursos\\icon_upd.png')
-
+            'nuevo': PhotoImage(file='recursos\\icon_aceptar.png')
         }
 
         # =============================================================
         # BANNER PANTALLA ASESORES
         # =============================================================
 
-        self.txt = "SYSTEM CONTROL IFAP (ASESORES)"
+        self.txt = "SYSTEM CONTROL IFAP (CAMBIAR CONTRASEÑA)"
         self.count = 0
         self.text = ''
         self.color = ["#4f4e4d", "#f29844", "red2"]
@@ -64,69 +48,42 @@ class Password_S:
         self.menubarra = Menu(self.root)
 
         # =============================================================
-        # CREACIÓN DEL MENÚ
+        # CREACIÓN DEL MENÚ ALUMNO
         # =============================================================
-        self.menubarra.add_cascade(label='ASESORES')
+        self.menubarra.add_cascade(label='ALUMNOS')
         self.root.config(menu=self.menubarra)
         self.menus = Menu(self.root)
         self.Column1 = Menu(self.menus, tearoff=0)
 
         # =============================================================
-        # AÑADIENDO OPCIONES AL MENÚ PRINCIPAL
+        # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
-        self.menus.add_cascade(label='INICIO', menu=self.Column1)
-        self.Column1.add_command(label='Menú Inicio', command=self.principal_btn)
+        self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column1)
+        self.Column1.add_command(label='Menú Facturación', command=self.factura_btn)
+        self.Column1.add_command(label='Verificar Factura')
         self.Column2 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
-        # AÑADIENDO OPCIONES AL MENÚ ALUMNO
-        # =============================================================
-        self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
-        self.Column2.add_command(label='Alumnos', command=self.student_btn)
-        self.Column2.add_command(label='Matriculación', command=self.matricula_btn)
-        self.Column3 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
-        # CREACIÓN DEL MENÚ ASESORES
-        # =============================================================
-        self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column4 = Menu(self.menus, tearoff=0)
-        self.root.config(menu=self.menus)
-
-        # =============================================================
-        # CREACIÓN DEL DE MENÚ CURSOS
-        # =============================================================
-        self.menus.add_cascade(label='CURSOS', menu=self.Column4)
-        self.Column4.add_command(label='Cursos', command=self.courses_btn)
-        self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
-        self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
         # CREACIÓN DEL DE MENÚ AYUDA
         # =============================================================
-        self.menus.add_cascade(label='USUARIOS', menu=self.Column5)
-        self.Column5.add_command(label='Cambiar Usuario', command=self.logout)
-        self.Column5.add_command(label='Cambiar Contraseña', command=self.pass_btn)
-        self.Column5.add_separator()
-        self.Column5.add_command(label='Cerrar Sesión', command=self.salir_principal)
-        self.Column5.add_separator()
-        self.Column6 = Menu(self.menus, tearoff=0)
+        self.menus.add_cascade(label='USUARIOS', menu=self.Column2)
+        self.Column2.add_command(label='Cambiar Usuario', command=self.logout)
+        self.Column2.add_command(label='Cambiar Contraseña', command=self.pass_btn)
+        self.Column2.add_separator()
+        self.Column2.add_command(label='Cerrar Sesión', command=self.salir_principal)
+        self.Column2.add_separator()
+        self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
         # =============================================================
         # CREACIÓN DEL DE MENÚ INFO
         # =============================================================
-        self.menus.add_cascade(label='INFO', menu=self.Column6)
-        self.Column6.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
-        self.Column6.add_separator()
+        self.menus.add_cascade(label='INFO', menu=self.Column3)
+        self.Column3.add_command(label='Sobre SIST_CONTROL (IFAP®)', command=self.caja_info_sist)
+        self.Column3.add_separator()
         self.root.config(menu=self.menus)
 
-        # =============================================================
-        # CREACIÓN DE PIÉ DE PANTALLA
-        # =============================================================
         self.footer_4 = Label(self.root, text='J.C.F DESING® | Derechos Reservados 2021', width=195, bg='black',
                               fg='white')
         self.footer_4.place(x=0, y=725)
@@ -302,45 +259,33 @@ class Password_S:
         self.root.withdraw()
         root.deiconify()
 
-    def student_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Student_Window_S.Student_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def matricula_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Matricula_Window_S.Matricula_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def assesor_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Assesor_Window_S.Assesor_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def courses_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Course_Window_S.Course_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def paralelos_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def principal_btn(self):
         root = Toplevel()
-        Frontend.Secretary.Principal_Window_S.Principal_S(root)
+        Frontend.Facturation.Principal_Window_F.Principal_F(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def factura_btn(self):
+        root = Toplevel()
+        Facturation_Window_F.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def facturation_btn(self):
+        root = Toplevel()
+        Facturation_Window_F.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
         self.root.withdraw()
         root.deiconify()
 
     def pass_btn(self):
         root = Toplevel()
-        Frontend.Secretary.Password_Window_S.Password_S(root)
+        Frontend.Facturation.Password_Window_F.Password(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -362,13 +307,13 @@ class Password_S:
         self.men2 = messagebox.showinfo('SIST_CONTROL (IFAP®)',
                                         'SIST_CONTROL (IFAP®) v2.0\n'
                                         'El uso de este software queda sujeto a los términos y condiciones del '
-                                        'contrato "BJM DESING®-CLIENTE".    \n'
+                                        'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 if __name__ == '__main__':
     root = Tk()
-    application = Password_S(root)
+    application = Password(root)
     root.mainloop()

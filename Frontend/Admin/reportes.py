@@ -6,7 +6,9 @@ import os
 
 
 class ReciboFactura():
-    '''Objeto para crear un recibo asociado a una factura'''
+    """
+        Objeto para crear un recibo asociado a una factura
+    """
 
     def __init__(self):
         self.titulo = 'Factura.pdf'

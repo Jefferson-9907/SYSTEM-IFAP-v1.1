@@ -17,8 +17,6 @@ import Frontend.Secretary.Student_Window_S
 import Frontend.Secretary.Matricula_Window_S
 import Frontend.Secretary.Assesor_Window_S
 import Frontend.Secretary.Course_Window_S
-import Frontend.Secretary.Paralelo_Window_S
-import Frontend.Secretary.Implements_Window_S
 import Frontend.Secretary.Password_Window_S
 
 
@@ -105,7 +103,6 @@ class Paralelo_S:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos', command=self.courses_btn)
         self.Column4.add_command(label='Paralelos')
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -189,9 +186,9 @@ class Paralelo_S:
         self.l_id_paralelo = Label(self.Manage_Frame_par, text='ID PARALELO', width='20',
                                    font=('Copperplate Gothic Bold', 10), bg='#808080')
         self.l_id_paralelo.grid(column=0, row=1, padx=1, pady=5)
-        self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11')
+        self.e_id_paralelo = Entry(self.Manage_Frame_par, textvariable=self.e_id_paralelo_1, width='11',
+                                   state='disabled')
         self.e_id_paralelo.grid(column=1, row=1, padx=1, pady=5, sticky="W")
-        self.e_id_paralelo_1.set(self.id_list)
         self.e_id_paralelo.focus()
 
         try:
@@ -232,31 +229,17 @@ class Paralelo_S:
         self.e_dia["values"] = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"]
         self.e_dia.grid(column=1, row=4, padx=0, pady=5, sticky="W")
 
-        try:
-            obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
-            self.db_connection.create(obj_paralelo_database.get_database())
-
-            query = "select * from horas"
-            hora_tuple = self.db_connection.select(query)
-
-            self.horas_list = []
-            for i in hora_tuple:
-                hora = i[1]
-                self.horas_list.append(hora)
-
-        except BaseException as msg:
-            print(msg)
-
-        self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20',
-                                  font=('Copperplate Gothic Bold', 10), bg='#808080')
+        self.l_h_paralelo = Label(self.Manage_Frame_par, text='HORA', width='20', font=('Copperplate Gothic Bold', 10),
+                                  bg='#808080')
         self.l_h_paralelo.grid(column=0, row=5, padx=1, pady=5)
         self.e_hora = ttk.Combobox(self.Manage_Frame_par, textvariable=self.e_hora_1, width='15',
                                    font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora['values'] = self.horas_list
+        self.e_hora["values"] = ["08:00:00--11:00:00", "08:30:00--11:30:00", "09:00:00--12:00:00", "09:30:00--12:30:00",
+                                 "10:00:00--13:00:00", "10:30:00--13:30:00", "11:00:00--14:00:00", "11:30:00--14:30:00",
+                                 "12:00:00--15:00:00", "12:30:00--15:30:00", "13:00:00--16:00:00", "13:30:00--16:30:00",
+                                 "14:00:00--17:00:00", "14:30:00--17:30:00", "15:00:00--18:00:00", "15:30:00--18:30:00",
+                                 "16:00:00--19:00:00", "16:30:00--19:30:00"]
         self.e_hora.grid(column=1, row=5, padx=0, pady=5, sticky="W")
-
-        self.frame_add_h = Frame(self.Manage_Frame_par, bg='#0d1e24')
-        self.frame_add_h.place(x=310, y=187, width=200)
 
         self.l_f_i_par = Label(self.Manage_Frame_par, text='FECHA INICIO', width='20',
                                font=('Copperplate Gothic Bold', 10), bg='#808080')
@@ -307,47 +290,6 @@ class Paralelo_S:
                                     command=self.clear_field_par, compound=TOP)
         self.clean_par_btn.image = imagenes['limpiar']
         self.clean_par_btn.grid(row=0, column=3, padx=15, pady=10)
-
-        # Manage Frame hora y día
-        self.Manage_Frame_h_d = Frame(self.root, relief=RIDGE, bd=4, bg='#a27114')
-        self.Manage_Frame_h_d.place(x=15, y=490, width=500, height=200)
-
-        m_title_d_h = Label(self.Manage_Frame_h_d, text="-ADMINISTAR HORAS-",
-                            font=("Copperplate Gothic Bold", 16, "bold"), bg='#a27114', fg="White")
-        m_title_d_h.grid(row=0, columnspan=1, padx=110, pady=10)
-
-        self.e_n_hora_e = StringVar()
-        self.e_n_hora_s = StringVar()
-
-        self.Manage_Frame_h_d_1 = Frame(self.Manage_Frame_h_d, bd=4, bg='#a27114')
-        self.Manage_Frame_h_d_1.place(x=30, y=50, width=450, height=100)
-
-        self.l_hora_e = Label(self.Manage_Frame_h_d_1, text='HORA ENTRADA', width='15',
-                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_hora_e.grid(column=0, row=1, padx=5, pady=5)
-        self.e_hora_e = ttk.Combobox(self.Manage_Frame_h_d_1, textvariable=self.e_n_hora_e, width='15',
-                                     font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora_e["values"] = ["08:00:00", "08:30:00", "09:00:00", "09:30:00", "10:00:00", "10:30:00",
-                                   "11:00:00", "11:30:00", "12:00:00", "12:30:00", "13:00:00", "13:30:00",
-                                   "14:00:00", "14:30:00", "15:00:00", "15:30:00", "16:00:00", "16:30:00",
-                                   "17:00:00", "17:30:00", "18:00:00", "18:30:00", "19:00:00", "19:30:00"]
-        self.e_hora_e.grid(column=1, row=1, padx=5, pady=5, sticky="W")
-
-        self.l_hora_s = Label(self.Manage_Frame_h_d_1, text='HORA SALIDA', width='15',
-                              font=('Copperplate Gothic Bold', 10), bg='#808080')
-        self.l_hora_s.grid(column=0, row=2, padx=5, pady=5)
-        self.e_hora_s = ttk.Combobox(self.Manage_Frame_h_d_1, textvariable=self.e_n_hora_s, width='15',
-                                     font=("Arial", 9, "bold"), state="readonly")
-        self.e_hora_s["values"] = ["08:00:00", "08:30:00", "09:00:00", "09:30:00", "10:00:00", "10:30:00",
-                                   "11:00:00", "11:30:00", "12:00:00", "12:30:00", "13:00:00", "13:30:00",
-                                   "14:00:00", "14:30:00", "15:00:00", "15:30:00", "16:00:00", "16:30:00",
-                                   "17:00:00", "17:30:00", "18:00:00", "18:30:00", "19:00:00", "19:30:00"]
-        self.e_hora_s.grid(column=1, row=2, padx=5, pady=5, sticky="W")
-
-        self.add_hora_btn = Button(self.Manage_Frame_h_d_1, image=imagenes['nuevo'], text='AÑADIR',
-                                   command=self.add_hora, compound="right")
-        self.add_hora_btn.image = imagenes['nuevo']
-        self.add_hora_btn.place(x=300, y=20)
 
         # Detail Frame
         self.Detail_Frame_par = Frame(self.root, bd=4, relief=RIDGE, bg='#a27114')
@@ -441,25 +383,6 @@ class Paralelo_S:
 
         except BaseException as msg:
             print(msg)
-
-    def add_hora(self):
-        if self.e_n_hora_e == "" or self.e_n_hora_s == "":
-            messagebox.showerror("SYST_CONTROL(IFAP®)-->(ERROR)", "TODOS LOS CAMPOS SON OBLIGATORIOS!!!")
-        else:
-            self.hora_e_s = (self.e_n_hora_e.get() + "-" + self.e_hora_s.get())
-            try:
-                obj_paralelo_database = Model_class.paralelos_registration.GetDatabase('use ddbb_sys_ifap;')
-                self.db_connection.create(obj_paralelo_database.get_database())
-
-                query = 'insert into horas (hora) values (?);'
-                values = self.hora_e_s
-                self.db_connection.insert(query, values)
-                self.e_hora.set("")
-                messagebox.showinfo("SYST_CONTROL(IFAP®)", f"HORA: {values[1]}\n "
-                                                           f"REGISTRADO CORRECTAMENTE")
-
-            except BaseException as msg:
-                messagebox.showerror("ERROR!!!", f"NO SE HAN PODIDO GUARDAR LA HORA DE ENTRADA Y SALIDA: {msg}")
 
     def pick_date_i(self, event):
         """
@@ -822,12 +745,6 @@ class Paralelo_S:
     def paralelos_btn(self):
         root = Toplevel()
         Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 

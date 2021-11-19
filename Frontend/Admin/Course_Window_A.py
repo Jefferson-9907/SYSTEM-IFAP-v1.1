@@ -16,8 +16,8 @@ import Frontend.Admin.Student_Window_A
 import Frontend.Admin.Matricula_Window_A
 import Frontend.Admin.Assesor_Window_A
 import Frontend.Admin.Paralelo_Window_A
-import Frontend.Admin.Implements_Window_A
 import Frontend.Admin.Facturation_Window_A
+from Frontend.Admin import Re_Facturation
 import Frontend.Admin.Report_Window_A
 import Frontend.Admin.Password_Window_A
 import Frontend.Admin.Users_Window_A
@@ -105,7 +105,6 @@ class Course:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos')
         self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -114,6 +113,7 @@ class Course:
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
         self.Column5.add_command(label='Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -618,15 +618,15 @@ class Course:
         self.root.withdraw()
         root.deiconify()
 
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def facturation_btn(self):
         root = Toplevel()
         Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -663,7 +663,7 @@ class Course:
                                         'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 def root():

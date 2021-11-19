@@ -15,8 +15,8 @@ import Frontend.Admin.Matricula_Window_A
 import Frontend.Admin.Assesor_Window_A
 import Frontend.Admin.Course_Window_A
 import Frontend.Admin.Paralelo_Window_A
-import Frontend.Admin.Implements_Window_A
 import Frontend.Admin.Facturation_Window_A
+from Frontend.Admin import Re_Facturation
 import Frontend.Admin.Report_Window_A
 import Frontend.Admin.Users_Window_A
 
@@ -77,6 +77,8 @@ class Password:
         # AÑADIENDO OPCIONES AL MENÚ ALUMNO
         # =============================================================
         self.menus.add_cascade(label='ALUMNOS', menu=self.Column2)
+        self.Column2.add_command(label='Menú Alumnos', command=self.student_btn)
+        self.Column2.add_command(label='Matriculación', command=self.matricula_btn)
         self.Column3 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -84,7 +86,7 @@ class Password:
         # CREACIÓN DEL MENÚ ASESORES
         # =============================================================
         self.menus.add_cascade(label='ASESORES', menu=self.Column3)
-        self.Column3.add_command(label='Menú Asesores', command=self.assesor_btn)
+        self.Column3.add_command(label='Asesores', command=self.assesor_btn)
         self.Column4 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -92,7 +94,8 @@ class Password:
         # CREACIÓN DEL DE MENÚ CURSOS
         # =============================================================
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
-        self.Column4.add_command(label='Menú Cursos', command=self.courses_btn)
+        self.Column4.add_command(label='Cursos', command=self.courses_btn)
+        self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -100,7 +103,8 @@ class Password:
         # CREACIÓN DEL DE MENÚ FACTURACIÓN
         # =============================================================
         self.menus.add_cascade(label='FACTURACIÓN', menu=self.Column5)
-        self.Column5.add_command(label='Menú Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Facturación', command=self.facturation_btn)
+        self.Column5.add_command(label='Verificar Factura', command=self.ver_fct_btn)
         self.Column6 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -343,15 +347,15 @@ class Password:
         self.root.withdraw()
         root.deiconify()
 
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Admin.Implements_Window_A.Implement(root)
-        self.root.withdraw()
-        root.deiconify()
-
     def facturation_btn(self):
         root = Toplevel()
         Frontend.Admin.Facturation_Window_A.Ventana_Principal(root)
+        self.root.withdraw()
+        root.deiconify()
+
+    def ver_fct_btn(self):
+        root = Toplevel()
+        Re_Facturation.Ventana_Principal_1(root)
         self.root.withdraw()
         root.deiconify()
 
@@ -391,10 +395,10 @@ class Password:
         self.men2 = messagebox.showinfo('SIST_CONTROL (IFAP®)',
                                         'SIST_CONTROL (IFAP®) v2.0\n'
                                         'El uso de este software queda sujeto a los términos y condiciones del '
-                                        'contrato "BJM DESING®-CLIENTE".    \n'
+                                        'contrato "J.C.F DESING®-CLIENTE".    \n'
                                         'El uso de este software queda sujeto a su contrato. No podrá utilizar '
                                         'este software para fines de distribución\n'
-                                        'total o parcial.\n\n\n© 2021 BJM DESING®. Todos los derechos reservados')
+                                        'total o parcial.\n\n\n© 2021 J.C.F DESING®. Todos los derechos reservados')
 
 
 if __name__ == '__main__':

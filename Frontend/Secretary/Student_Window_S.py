@@ -15,7 +15,6 @@ import Frontend.Secretary.Matricula_Window_S
 import Frontend.Secretary.Assesor_Window_S
 import Frontend.Secretary.Course_Window_S
 import Frontend.Secretary.Paralelo_Window_S
-import Frontend.Secretary.Implements_Window_S
 import Frontend.Secretary.Password_Window_S
 
 
@@ -102,7 +101,6 @@ class Student_S:
         self.menus.add_cascade(label='CURSOS', menu=self.Column4)
         self.Column4.add_command(label='Cursos', command=self.courses_btn)
         self.Column4.add_command(label='Paralelos', command=self.paralelos_btn)
-        self.Column4.add_command(label='Implementos', command=self.implements_btn)
         self.Column5 = Menu(self.menus, tearoff=0)
         self.root.config(menu=self.menus)
 
@@ -723,12 +721,6 @@ class Student_S:
     def paralelos_btn(self):
         root = Toplevel()
         Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 

@@ -14,7 +14,6 @@ import Frontend.Secretary.Student_Window_S
 import Frontend.Secretary.Assesor_Window_S
 import Frontend.Secretary.Course_Window_S
 import Frontend.Secretary.Paralelo_Window_S
-import Frontend.Secretary.Implements_Window_S
 import Frontend.Secretary.Password_Window_S
 
 
@@ -690,12 +689,6 @@ class Matricula_S:
     def paralelos_btn(self):
         root = Toplevel()
         Frontend.Secretary.Paralelo_Window_S.Paralelo_S(root)
-        self.root.withdraw()
-        root.deiconify()
-
-    def implements_btn(self):
-        root = Toplevel()
-        Frontend.Secretary.Implements_Window_S.Implement_S(root)
         self.root.withdraw()
         root.deiconify()
 
